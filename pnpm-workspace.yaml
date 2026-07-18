@@ -1,0 +1,6 @@
+allowBuilds:
+  core-js: false
+  es5-ext: false
+  esbuild: true
+patchedDependencies:
+  foliate-js@1.0.1: patches/foliate-js@1.0.1.patch

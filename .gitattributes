@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# pnpm-generated patches may preserve upstream blank-line whitespace.
+patches/*.patch -whitespace

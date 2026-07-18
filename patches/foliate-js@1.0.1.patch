@@ -1,0 +1,69 @@
+diff --git a/fixed-layout.js b/fixed-layout.js
+index b648a0da4c07a85d04c53b9be5dbdc0c60b7d47a..db1bd21dc8efdd4a675491fcc5b3ddcfc74d8cbd 100644
+--- a/fixed-layout.js
++++ b/fixed-layout.js
+@@ -82,9 +82,9 @@ export class FixedLayout extends HTMLElement {
+             display: 'none',
+             overflow: 'hidden',
+         })
+-        // `allow-scripts` is needed for events because of WebKit bug
+-        // https://bugs.webkit.org/show_bug.cgi?id=218086
+-        iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts')
++        // Book content is untrusted. Electron uses Chromium, so we do not need
++        // the WebKit compatibility exception that would permit book scripts.
++        iframe.setAttribute('sandbox', 'allow-same-origin')
+         iframe.setAttribute('scrolling', 'no')
+         iframe.setAttribute('part', 'filter')
+         this.#root.append(element)
+@@ -316,4 +316,5 @@ export class FixedLayout extends HTMLElement {
+     }
+ }
+ 
+-customElements.define('foliate-fxl', FixedLayout)
++if (!customElements.get('foliate-fxl'))
++    customElements.define('foliate-fxl', FixedLayout)
+diff --git a/paginator.js b/paginator.js
+index 95c4d0dae16bd96c3ace91bbd87fd1bea1c9f571..c83b1a717322495eaf62e06456d5708aadb9ea05 100644
+--- a/paginator.js
++++ b/paginator.js
+@@ -229,9 +229,9 @@ class View {
+             display: 'none',
+             width: '100%', height: '100%',
+         })
+-        // `allow-scripts` is needed for events because of WebKit bug
+-        // https://bugs.webkit.org/show_bug.cgi?id=218086
+-        this.#iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts')
++        // Book content is untrusted. Electron uses Chromium, so we do not need
++        // the WebKit compatibility exception that would permit book scripts.
++        this.#iframe.setAttribute('sandbox', 'allow-same-origin')
+         this.#iframe.setAttribute('scrolling', 'no')
+     }
+     get element() {
+@@ -1163,4 +1163,5 @@ export class Paginator extends HTMLElement {
+     }
+ }
+ 
+-customElements.define('foliate-paginator', Paginator)
++if (!customElements.get('foliate-paginator'))
++    customElements.define('foliate-paginator', Paginator)
+diff --git a/view.js b/view.js
+index 6babab63987edac57076f1533026238ba90c455f..fb97f22228128742f21825a2433d4a43845c76fb 100644
+--- a/view.js
++++ b/view.js
+@@ -246,6 +246,9 @@ export class View extends HTMLElement {
+             this.renderer = document.createElement('foliate-paginator')
+         }
+         this.renderer.setAttribute('exportparts', 'head,foot,filter,container')
++        const initialFlow = this.getAttribute('data-local-book-reader-flow')
++        if (initialFlow === 'paginated' || initialFlow === 'scrolled')
++            this.renderer.setAttribute('flow', initialFlow)
+         this.renderer.addEventListener('load', e => this.#onLoad(e.detail))
+         this.renderer.addEventListener('relocate', e => this.#onRelocate(e.detail))
+         this.renderer.addEventListener('create-overlayer', e =>
+@@ -579,4 +582,5 @@ export class View extends HTMLElement {
+     }
+ }
+ 
+-customElements.define('foliate-view', View)
++if (!customElements.get('foliate-view'))
++    customElements.define('foliate-view', View)

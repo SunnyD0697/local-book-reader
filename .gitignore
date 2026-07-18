@@ -1,0 +1,26 @@
+node_modules/
+.pnpm-store/
+
+# Generated Obsidian plugin artifacts. Release artifacts are produced by the build.
+main.js
+pdf.worker.min.mjs
+data.json
+
+# Local editor, agent, test, and diagnostic state.
+.obsidian/
+.agents/
+.cache/
+.codex/
+diagnostics/
+coverage/
+
+# Never commit credentials, private keys, or machine-specific secrets.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Operating-system metadata.
+.DS_Store
+Thumbs.db
