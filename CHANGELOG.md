@@ -9,6 +9,7 @@ All notable changes to this project are documented here.
 - Regenerated the `foliate-js` security patch and verified a clean, frozen,
   offline install followed by a production build.
 - Added public-release documentation and a build-only GitHub Actions workflow.
+- Completed the initial private-repository CI rehearsal.
 
 ## v0.2.71 — local baseline
 
