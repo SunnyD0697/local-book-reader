@@ -70,6 +70,11 @@ refresh action instead.
 - Use [SUPPORT.md](SUPPORT.md) for safe bug-report guidance.
 - Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
+## Author
+
+Created and maintained by Sunny D
+([@SunnyD0697](https://github.com/SunnyD0697)).
+
 ## License
 
 Licensed under the [MIT License](LICENSE).

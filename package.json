@@ -3,7 +3,10 @@
   "version": "0.2.71",
   "description": "A local-first ebook reader and research foundation for Obsidian.",
   "main": "main.js",
-  "author": "Sunny D",
+  "author": {
+    "name": "Sunny D",
+    "url": "https://github.com/SunnyD0697"
+  },
   "packageManager": "pnpm@11.9.0",
   "engines": {
     "node": ">=22.13.0"
@@ -29,7 +32,7 @@
   "devDependencies": {
     "@types/node": "^22.15.2",
     "esbuild": "^0.25.2",
-    "obsidian": "latest",
+    "obsidian": "1.13.1",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3"
   },
