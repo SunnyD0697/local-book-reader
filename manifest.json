@@ -5,5 +5,6 @@
   "minAppVersion": "1.8.0",
   "description": "A local-first ebook reader and research foundation for Obsidian.",
   "author": "Sunny D",
+  "authorUrl": "https://github.com/SunnyD0697",
   "isDesktopOnly": true
 }
