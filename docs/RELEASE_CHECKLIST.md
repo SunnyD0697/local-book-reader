@@ -1,18 +1,32 @@
 # Public release checklist
 
-This checklist is for a future GitHub release. Completing local checks does not
-authorize creating a repository, pushing code, publishing a release, or
-submitting to the Obsidian community-plugin directory.
+This checklist covers the first GitHub public preview. Completing local checks
+does not authorize pushing a branch, changing repository visibility, creating a
+tag, publishing a GitHub Release, or submitting to the Obsidian community
+directory.
+
+## Version identity
+
+- [ ] Keep the display name **Local Book Reader** and plugin ID
+  `local-book-reader`.
+- [ ] Set `manifest.json` and `package.json` to `0.3.0`.
+- [ ] Set `manifest.json` `minAppVersion` and `versions.json` to `1.12.7`.
+- [ ] Keep the human-facing label `v0.3.0`, but use the exact Git tag `0.3.0`
+  without a `v` prefix so it matches `manifest.json`.
+- [ ] Keep `v0.2.71` labeled as a frozen local baseline, not a public release.
 
 ## Privacy and source review
 
-- [ ] Start from this sanitized candidate directory, not the personal dev tree.
+- [ ] Start from the sanitized candidate repository, not the personal dev tree.
 - [ ] Confirm no `diagnostics`, `.cache`, `.agents`, `.codex`, `node_modules`,
   private Vault data, ebooks, backups, `.env` files, or credentials are staged.
-- [ ] Review `git status --ignored` and the complete staged diff.
-- [ ] Search for real local paths, email addresses, tokens, and private samples.
+- [ ] Review `git status --ignored` and the complete branch diff.
+- [ ] Search for real local paths, tokens, private samples, and unintended
+  personal data.
+- [ ] Confirm the only intentionally public email address is the security and
+  conduct contact documented by the maintainer.
 
-## Build and security
+## Build, security, and licenses
 
 - [ ] Run `pnpm install --frozen-lockfile` in a clean environment.
 - [ ] Run `pnpm run build`.
@@ -20,20 +34,46 @@ submitting to the Obsidian community-plugin directory.
 - [ ] Confirm no direct ebook copy, move, rename, overwrite, or delete path.
 - [ ] Confirm no DRM bypass, telemetry, account requirement, external process,
   server, or undocumented network request.
+- [ ] Verify `THIRD_PARTY_NOTICES.md` against the exact bundled dependency
+  versions and preserve required license notices in the release package.
 
 ## Public documentation
 
-- [ ] Review README, LICENSE, SECURITY, PRIVACY, CONTRIBUTING, SUPPORT, and
-  CHANGELOG for accuracy and public contact details.
-- [ ] Fill in repository URL, issue tracker URL, and homepage only after the
-  repository exists and the user approves their publication.
-- [ ] Keep `v0.2.71` labeled as a local baseline, not a public-release claim.
+- [ ] Review README, LICENSE, THIRD_PARTY_NOTICES, SECURITY, PRIVACY,
+  CONTRIBUTING, CODE_OF_CONDUCT, SUPPORT, INSTALLATION, and CHANGELOG.
+- [ ] State that the preview is tested on Windows with Obsidian desktop
+  `1.12.7`; mark macOS and Linux as unvalidated and mobile as unsupported.
+- [ ] State that the current UI is Simplified Chinese.
+- [ ] Document the user-confirmed backup-export exception outside the Vault.
+- [ ] Warn that GitHub's automatic **Source code (zip)** archive is not an
+  install package.
 
-## GitHub and release decisions
+## Release package
 
-- [ ] Review CI on a private rehearsal repository.
-- [ ] Enable GitHub private vulnerability reporting and update SECURITY.md.
-- [ ] Choose a release version and tag only after the public-release checklist
-  is complete.
-- [ ] Obtain explicit user confirmation before each external action: repository
-  creation, push, public visibility change, Release publication, or PR.
+- [ ] Build `local-book-reader-0.3.0.zip` from the reviewed commit.
+- [ ] Include `main.js`, `manifest.json`, `styles.css`,
+  `pdf.worker.min.mjs`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, and `LICENSES/`.
+- [ ] Confirm the four runtime files are at the ZIP root and no source, cache,
+  ebook, Vault data, or credentials are included.
+- [ ] Generate and verify `SHA256SUMS.txt`.
+- [ ] Install the dedicated ZIP in a separate test Vault and perform the final
+  smoke test.
+
+## GitHub decisions and approval gates
+
+- [ ] Confirm the private-repository CI passes on the reviewed commit.
+- [ ] Obtain separate user approval before pushing the preparation branch.
+- [ ] Obtain separate user approval before merging its pull request.
+- [ ] Obtain separate user approval before changing the repository to Public.
+- [ ] After the repository is public, enable private vulnerability reporting.
+- [ ] Obtain separate user approval before creating tag `0.3.0` or publishing
+  the GitHub Release.
+
+## Obsidian community-directory boundary
+
+- [ ] Do not submit this build to the Obsidian community directory. The
+  standard installer retrieves `main.js`, `manifest.json`, and optionally
+  `styles.css`, but this build also requires `pdf.worker.min.mjs`.
+- [ ] Before a future community submission, bundle or otherwise deliver the PDF
+  Worker through a supported three-asset release layout, repeat the security
+  review, and recheck that the plugin name and ID remain unique.
