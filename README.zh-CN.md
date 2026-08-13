@@ -4,7 +4,7 @@
 
 Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当前库（Vault）中阅读和整理个人电子书。它在本地处理电子书，将原始电子书作为只读内容，并把研究成果保存为普通 Markdown 文件。
 
-> **发布状态：** `0.3.0` 是首次 GitHub 公开预览版。它将通过 GitHub Releases 提供下载，暂未进入 Obsidian 社区插件目录。
+> **发布状态：** `0.3.0` 是首个 GitHub 公开预览版本。专用安装 ZIP 将通过 GitHub Release 发布，暂未进入 Obsidian 社区插件目录。
 
 ## 可以做什么
 

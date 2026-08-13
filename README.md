@@ -7,9 +7,9 @@ personal ebooks in the active Vault. It keeps ebook handling local, treats
 original ebook files as read-only input, and stores research results as normal
 Markdown.
 
-> **Release status:** `0.3.0` is the first GitHub public preview. It is
-> distributed through GitHub Releases and is not yet available in the Obsidian
-> community-plugin directory.
+> **Release status:** `0.3.0` is the first GitHub public-preview version. The
+> dedicated installation ZIP will be published through a GitHub Release. It is
+> not yet available in the Obsidian community-plugin directory.
 
 ## What it does
 
