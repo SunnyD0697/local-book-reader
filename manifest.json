@@ -1,9 +1,9 @@
 {
   "id": "local-book-reader",
   "name": "Local Book Reader",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "minAppVersion": "1.12.7",
-  "description": "Read local ebooks in Obsidian with progress, bookmarks, excerpts, and research notes.",
+  "description": "Read local ebooks in Obsidian with progress, bookmarks, excerpts, and research notes. 在 Obsidian 中阅读本地电子书，支持进度、书签、摘录与研究笔记。",
   "author": "Sunny D",
   "authorUrl": "https://github.com/SunnyD0697",
   "isDesktopOnly": true

@@ -1,7 +1,7 @@
 import { ItemView, Menu, Modal, WorkspaceLeaf } from "obsidian";
 import type { BookReadingState, LibraryBook, ReadingStatus, ScanProgress } from "./book-store";
 import LocalBookReaderPlugin from "./main";
-import { LocalizedNotice as Notice, getLanguage, observeLocalization } from "./i18n";
+import { LocalizedNotice as Notice, getLanguage, localizeTree, observeLocalization } from "./i18n";
 
 export const BOOK_LIBRARY_VIEW_TYPE = "local-book-reader-library";
 
@@ -120,6 +120,7 @@ export class BookLibraryView extends ItemView {
     // Build the potentially large result list in a later task. The controls,
     // especially the search field, can receive focus before list work begins.
     this.scheduleResultRender();
+    localizeTree(this.contentEl);
   }
 
   private addScanControls(container: HTMLElement, scan: ScanProgress, indexedCount: number): void {
@@ -250,6 +251,7 @@ export class BookLibraryView extends ItemView {
       this.pendingResultRender = undefined;
       if (this.resultsEl !== container || !container.isConnected) return;
       this.renderBookList(container, this.currentBooks);
+      localizeTree(container);
     }, 0);
   }
 
@@ -356,6 +358,7 @@ export class BookLibraryView extends ItemView {
       this.plugin.setBookReadingStatus(item.book.bookId, state.value as ReadingStatus);
       this.render();
     };
+    localizeTree(row);
   }
 
   private async startOrResumeScan(): Promise<void> {

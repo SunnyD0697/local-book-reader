@@ -1,6 +1,6 @@
 import { Notice as ObsidianNotice } from "obsidian";
 
-export type UiLanguage = "zh-CN" | "en";
+export type UiLanguage = "zh-CN" | "zh-TW" | "en";
 
 let activeLanguage: UiLanguage = "zh-CN";
 
@@ -30,7 +30,7 @@ const english: Record<string, string> = {
   "打开个人图书馆": "Open Personal Library",
   "Local Book Reader 设置": "Local Book Reader settings",
   "界面语言": "Interface language",
-  "选择 English 或简体中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choose English or Simplified Chinese. Reopen an open plugin page after switching to see the full update. This never changes books, notes, or existing data.",
+  "选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choose English, Simplified Chinese, or Traditional Chinese. Reopen an open plugin page after switching to see the full update. This never changes books, notes, or existing data.",
   "馆主名称": "Library owner name",
   "填写后显示为“名称 的个人图书馆”；留空则显示“个人图书馆”。名称只保存在插件设置中，不会改动电子书或索引。": "When set, the library is shown as “Name's Personal Library”; otherwise it is “Personal Library”. The name stays in plugin settings and never changes books or the index.",
   "例如：Sunny D": "For example: Sunny D",
@@ -304,6 +304,27 @@ const english: Record<string, string> = {
 
 const chinese = Object.fromEntries(Object.entries(english).map(([source, translated]) => [translated, source]));
 
+// The source strings are Simplified Chinese. This character map covers every
+// Simplified-to-Traditional difference used by the interface and also handles
+// dynamic status strings without changing ebook content or user data.
+const traditionalCharacters: Record<string, string> = {
+  "与": "與", "个": "個", "为": "為", "书": "書", "仅": "僅", "从": "從", "会": "會", "体": "體", "关": "關", "内": "內",
+  "写": "寫", "准": "準", "击": "擊", "创": "創", "删": "刪", "务": "務", "动": "動", "历": "歷", "发": "發", "变": "變",
+  "叙": "敘", "台": "臺", "号": "號", "响": "響", "图": "圖", "备": "備", "复": "復", "夹": "夾", "宽": "寬", "对": "對",
+  "将": "將", "属": "屬", "带": "帶", "库": "庫", "应": "應", "开": "開", "当": "當", "录": "錄", "径": "徑", "态": "態",
+  "扩": "擴", "护": "護", "择": "擇", "换": "換", "据": "據", "数": "數", "无": "無", "时": "時", "显": "顯", "暂": "暫",
+  "条": "條", "标": "標", "树": "樹", "检": "檢", "没": "沒", "浅": "淺", "点": "點", "状": "狀", "独": "獨", "环": "環",
+  "现": "現", "电": "電", "码": "碼", "础": "礎", "确": "確", "称": "稱", "笔": "筆", "筛": "篩", "签": "簽", "简": "簡",
+  "类": "類", "经": "經", "结": "結", "统": "統", "缓": "緩", "缩": "縮", "联": "聯", "认": "認", "记": "記", "许": "許",
+  "论": "論", "设": "設", "识": "識", "词": "詞", "试": "試", "该": "該", "语": "語", "请": "請", "读": "讀", "转": "轉",
+  "载": "載", "输": "輸", "边": "邊", "过": "過", "这": "這", "进": "進", "适": "適", "选": "選", "键": "鍵", "长": "長",
+  "闭": "閉", "间": "間", "阅": "閱", "随": "隨", "页": "頁", "项": "項", "题": "題", "馆": "館"
+};
+
+function toTraditional(source: string): string {
+  return [...source].map((character) => traditionalCharacters[character] ?? character).join("");
+}
+
 export function setLanguage(language: UiLanguage): void {
   activeLanguage = language;
   window.dispatchEvent(new CustomEvent("local-book-reader-language-changed"));
@@ -315,6 +336,7 @@ export function getLanguage(): UiLanguage {
 
 export function t(source: string): string {
   if (activeLanguage === "en") return english[source] ?? translateDynamicToEnglish(source);
+  if (activeLanguage === "zh-TW") return toTraditional(chinese[source] ?? source);
   return chinese[source] ?? source;
 }
 
@@ -329,6 +351,8 @@ function translateDynamicToEnglish(source: string): string {
   if (match) return `Showing ${match[1]} of ${match[2]} Markdown entries`;
   match = source.match(/^已选择 (\d+) 条摘录$/u);
   if (match) return `${match[1]} excerpts selected`;
+  match = source.match(/^核心阅读数据：(.+)；可清理缓存：(.+) \/ (.+)（(\d+) 个文件）$/u);
+  if (match) return `Core reading data: ${match[1]}; rebuildable cache: ${match[2]} / ${match[3]} (${match[4]} ${match[4] === "1" ? "file" : "files"})`;
   match = source.match(/^第 (\d+) \/ (\d+) 页 · (\d+)%$/u);
   if (match) return `Page ${match[1]} of ${match[2]} · ${match[3]}%`;
   match = source.match(/^第 (\d+) 页$/u);
@@ -373,21 +397,10 @@ export function localizeTree(root: HTMLElement): void {
 }
 
 export function observeLocalization(root: HTMLElement): () => void {
-  const refresh = () => localizeTree(root);
-  refresh();
-  const observer = new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of Array.from(record.addedNodes)) {
-        if (node instanceof HTMLElement) localizeTree(node);
-        else if (node.nodeType === Node.TEXT_NODE && node.nodeValue) node.nodeValue = t(node.nodeValue);
-      }
-      if (record.type === "attributes" && record.target instanceof HTMLElement) localizeElement(record.target);
-    }
-  });
-  observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["aria-label", "placeholder", "title", "alt"] });
-  window.addEventListener("local-book-reader-language-changed", refresh);
-  return () => {
-    observer.disconnect();
-    window.removeEventListener("local-book-reader-language-changed", refresh);
-  };
+  // Do not watch the complete Obsidian DOM. Its controls can mutate while
+  // rendering, which turns a translation pass into an unbounded UI update.
+  // Views explicitly localize their initial render and reopen after a language
+  // change, so a one-time pass is both sufficient and responsive.
+  localizeTree(root);
+  return () => undefined;
 }
