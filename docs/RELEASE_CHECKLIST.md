@@ -1,18 +1,17 @@
 # Public release checklist
 
-This checklist covers the first GitHub public preview. Completing local checks
-does not authorize pushing a branch, changing repository visibility, creating a
-tag, publishing a GitHub Release, or submitting to the Obsidian community
-directory.
+This checklist covers the first GitHub public preview and the following
+community-directory candidate. Completing local checks does not authorize
+pushing a branch, changing repository visibility, creating a tag, publishing a
+GitHub Release, or submitting to the Obsidian community directory.
 
 ## Version identity
 
 - [ ] Keep the display name **Local Book Reader** and plugin ID
   `local-book-reader`.
-- [ ] Set `manifest.json` and `package.json` to `0.3.0`.
+- [ ] Set `manifest.json` and `package.json` to the intended release version.
 - [ ] Set `manifest.json` `minAppVersion` and `versions.json` to `1.12.7`.
-- [ ] Keep the human-facing label `v0.3.0`, but use the exact Git tag `0.3.0`
-  without a `v` prefix so it matches `manifest.json`.
+- [ ] Use the exact Git tag that matches `manifest.json`, without a `v` prefix.
 - [ ] Keep `v0.2.71` labeled as a frozen local baseline, not a public release.
 
 ## Privacy and source review
@@ -48,7 +47,7 @@ directory.
 - [ ] Warn that GitHub's automatic **Source code (zip)** archive is not an
   install package.
 
-## Release package
+## GitHub public-preview package (`0.3.0` only)
 
 - [ ] Build `local-book-reader-0.3.0.zip` from the reviewed commit.
 - [ ] Include `main.js`, `manifest.json`, `styles.css`,
@@ -69,11 +68,13 @@ directory.
 - [ ] Obtain separate user approval before creating tag `0.3.0` or publishing
   the GitHub Release.
 
-## Obsidian community-directory boundary
+## Obsidian community-directory candidate (`0.3.1`)
 
-- [ ] Do not submit this build to the Obsidian community directory. The
-  standard installer retrieves `main.js`, `manifest.json`, and optionally
-  `styles.css`, but this build also requires `pdf.worker.min.mjs`.
-- [ ] Before a future community submission, bundle or otherwise deliver the PDF
-  Worker through a supported three-asset release layout, repeat the security
-  review, and recheck that the plugin name and ID remain unique.
+- [ ] Keep the released `0.3.0` GitHub public-preview ZIP unchanged; it has a
+  historical four-file layout including `pdf.worker.min.mjs`.
+- [ ] Confirm that `0.3.1` bundles the PDF Worker into `main.js` and requires
+  no fourth runtime file.
+- [ ] Create a fresh test Vault containing only `main.js`, `manifest.json`, and
+  `styles.css`, then complete EPUB and PDF smoke tests before any release.
+- [ ] Before a future community submission, repeat the security review and
+  recheck that the plugin name and ID remain unique.

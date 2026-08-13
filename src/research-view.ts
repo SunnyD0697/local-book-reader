@@ -1,7 +1,8 @@
-import { ItemView, Notice, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf } from "obsidian";
 import type { StoredExcerpt } from "./book-store";
 import type { ResearchMarkdownEntry } from "./note-service";
 import LocalBookReaderPlugin from "./main";
+import { LocalizedNotice as Notice, observeLocalization, t } from "./i18n";
 
 export const BOOK_RESEARCH_VIEW_TYPE = "local-book-reader-research";
 
@@ -23,6 +24,7 @@ export class BookResearchView extends ItemView {
   private markdownEntries: ResearchMarkdownEntry[] | undefined;
   private markdownLoading = false;
   private markdownSearchGeneration = 0;
+  private stopLocalization: (() => void) | undefined;
 
   constructor(leaf: WorkspaceLeaf, private readonly plugin: LocalBookReaderPlugin) {
     super(leaf);
@@ -33,7 +35,7 @@ export class BookResearchView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "摘录与笔记检索";
+    return t("摘录与笔记检索");
   }
 
   getIcon(): string {
@@ -41,7 +43,13 @@ export class BookResearchView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
+    this.stopLocalization = observeLocalization(this.contentEl);
     this.render();
+  }
+
+  async onClose(): Promise<void> {
+    this.stopLocalization?.();
+    this.stopLocalization = undefined;
   }
 
   private render(): void {
@@ -224,10 +232,10 @@ export class BookResearchView extends ItemView {
       else this.selectedExcerptIds.delete(entry.excerpt.excerptId);
       refreshSelectionState();
     };
-    row.createDiv({ cls: "ebook-research__book", text: entry.book.name });
+    row.createDiv({ cls: "ebook-research__book", text: entry.book.name, attr: { "data-local-book-reader-no-localize": "true" } });
     row.createDiv({ cls: "ebook-research__meta", text: `${entry.book.extension.toUpperCase()} · ${entry.excerpt.createdAt}` });
     if (tagsOf(entry).length) row.createDiv({ cls: "ebook-research__meta", text: tagsOf(entry).map((tag) => `#${tag}`).join(" ") });
-    row.createEl("blockquote", { text: entry.excerpt.text });
+    row.createEl("blockquote", { text: entry.excerpt.text, attr: { "data-local-book-reader-no-localize": "true" } });
     if (entry.excerpt.note) row.createDiv({ cls: "ebook-research__note", text: `随想：${entry.excerpt.note}` });
     const open = row.createEl("button", {
       text: "返回原文",
@@ -241,10 +249,10 @@ export class BookResearchView extends ItemView {
 
   private renderMarkdownEntry(container: HTMLElement, entry: ResearchMarkdownEntry): void {
     const row = container.createDiv({ cls: "ebook-research__entry" });
-    row.createDiv({ cls: "ebook-research__book", text: entry.title });
+    row.createDiv({ cls: "ebook-research__book", text: entry.title, attr: { "data-local-book-reader-no-localize": "true" } });
     row.createDiv({ cls: "ebook-research__meta", text: `${entry.kind === "thought" ? "想法" : "主题研究笔记"}${entry.createdAt ? ` · ${entry.createdAt}` : ""}` });
     if (entry.tags.length) row.createDiv({ cls: "ebook-research__meta", text: entry.tags.map((tag) => `#${tag}`).join(" ") });
-    row.createDiv({ cls: "ebook-research__markdown-preview", text: this.markdownPreview(entry.text) });
+    row.createDiv({ cls: "ebook-research__markdown-preview", text: this.markdownPreview(entry.text), attr: { "data-local-book-reader-no-localize": "true" } });
     const open = row.createEl("button", {
       text: "打开笔记",
       attr: { title: "打开这条内容所在的 Markdown 笔记" },

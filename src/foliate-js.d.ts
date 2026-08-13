@@ -8,4 +8,7 @@ declare module "foliate-js/overlayer.js" {
   }
 }
 
-declare module "pdfjs-dist/legacy/build/pdf.worker.mjs";
+declare module "pdfjs-dist/legacy/build/pdf.worker.min.mjs" {
+  const source: string;
+  export default source;
+}

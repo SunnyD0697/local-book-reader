@@ -1,4 +1,5 @@
 import { DataAdapter, TFile, Vault, normalizePath } from "obsidian";
+import type { UiLanguage } from "./i18n";
 
 export const SUPPORTED_BOOK_EXTENSIONS = new Set(["azw3", "mobi", "azw", "epub", "pdf", "txt"]);
 
@@ -136,6 +137,7 @@ interface PluginSettings {
   readerAppearanceScopeVersion?: number;
   readerOpenMode: ReaderOpenMode;
   hasCompletedOnboarding: boolean;
+  uiLanguage?: UiLanguage;
 }
 
 interface BackupMetadata {
@@ -222,21 +224,22 @@ function defaultState(): ReadingState {
   };
 }
 
-function defaultSettings(): PluginSettings {
+function defaultSettings(language: UiLanguage = "zh-CN"): PluginSettings {
   return {
     schemaVersion: SCHEMA_VERSION,
     libraryOwnerName: "",
-    notesDirectory: "zz_阅读与研究/阅读笔记",
-    noteTemplate: defaultNoteTemplate(),
-    researchDirectory: "zz_阅读与研究/主题研究",
+    notesDirectory: language === "en" ? "zz_Reading & Research/Reading Notes" : "zz_阅读与研究/阅读笔记",
+    noteTemplate: defaultNoteTemplate(language),
+    researchDirectory: language === "en" ? "zz_Reading & Research/Research Notes" : "zz_阅读与研究/主题研究",
     readerAppearance: defaultReaderAppearance(),
     readerAppearanceScopeVersion: 1,
     readerOpenMode: "tab",
-    hasCompletedOnboarding: false
+    hasCompletedOnboarding: false,
+    uiLanguage: language
   };
 }
 
-export function defaultNoteTemplate(): string {
+export function defaultNoteTemplate(language: UiLanguage = "zh-CN"): string {
   return [
     "---",
     "title: {{titleJson}}",
@@ -247,7 +250,7 @@ export function defaultNoteTemplate(): string {
     "created: {{createdJson}}",
     "---",
     "",
-    "# {{title}}",
+    language === "en" ? "# {{title}}" : "# {{title}}",
     ""
   ].join("\n");
 }
@@ -572,6 +575,9 @@ export class BookStore {
 
   async initialize(legacy: LegacyReaderData | null, pluginVersion = "unknown"): Promise<void> {
     await this.files.recoverInterruptedWrites();
+    const hadExistingPluginData = await this.files.exists(INDEX_FILE)
+      || await this.files.exists(STATE_FILE)
+      || await this.files.exists(SETTINGS_FILE);
     this.index = await this.files.load(INDEX_FILE, defaultIndex(), isIndex);
     this.index.scan ??= defaultScanState();
     this.index.scan.relinked ??= 0;
@@ -584,7 +590,14 @@ export class BookStore {
     this.settings.readerAppearance = this.normalizeReaderAppearance(this.settings.readerAppearance);
     this.settings.readerOpenMode = this.normalizeReaderOpenMode(this.settings.readerOpenMode);
     this.settings.libraryOwnerName = this.normalizeLibraryOwnerName(this.settings.libraryOwnerName ?? "");
-    this.settings.noteTemplate ??= defaultNoteTemplate();
+    this.settings.uiLanguage ??= hadExistingPluginData ? "zh-CN" : "en";
+    if (!hadExistingPluginData) {
+      const freshDefaults = defaultSettings(this.settings.uiLanguage);
+      this.settings.notesDirectory = freshDefaults.notesDirectory;
+      this.settings.researchDirectory = freshDefaults.researchDirectory;
+      this.settings.noteTemplate = freshDefaults.noteTemplate;
+    }
+    this.settings.noteTemplate ??= defaultNoteTemplate(this.settings.uiLanguage);
     // Existing users have already learned the original workflow; only a truly
     // new installation receives the one-time first-use guide.
     this.settings.hasCompletedOnboarding ??= hadSavedSettings;
@@ -738,6 +751,15 @@ export class BookStore {
     await this.saveSettings();
   }
 
+  getUiLanguage(): UiLanguage {
+    return this.settings.uiLanguage === "en" ? "en" : "zh-CN";
+  }
+
+  async setUiLanguage(language: UiLanguage): Promise<void> {
+    this.settings.uiLanguage = language;
+    await this.saveSettings();
+  }
+
   getNotesDirectory(): string {
     return this.settings.notesDirectory;
   }
@@ -787,7 +809,8 @@ export class BookStore {
 
   async resetSettingsToDefaults(): Promise<void> {
     const hasCompletedOnboarding = this.settings.hasCompletedOnboarding;
-    this.settings = { ...defaultSettings(), hasCompletedOnboarding };
+    const uiLanguage = this.getUiLanguage();
+    this.settings = { ...defaultSettings(uiLanguage), hasCompletedOnboarding, uiLanguage };
     await this.saveSettings();
   }
 
@@ -979,7 +1002,7 @@ export class BookStore {
       const excerpts = this.state.books[book.bookId]?.excerpts ?? [];
       for (const excerpt of excerpts) entries.push({ book, excerpt });
     }
-    return entries.sort((left, right) => right.excerpt.createdAt.localeCompare(left.excerpt.createdAt, "zh-Hans-CN"));
+    return entries.sort((left, right) => right.excerpt.createdAt.localeCompare(left.excerpt.createdAt, this.locale()));
   }
 
   getBookByPath(path: string): BookRecord | undefined {
@@ -1060,7 +1083,7 @@ export class BookStore {
       .map((book) => ({ book, reading: this.state.books[book.bookId] ?? {
         status: "unread", isFavorite: false, bookmarks: [], excerpts: []
       } }))
-      .sort((left, right) => left.book.name.localeCompare(right.book.name, "zh-Hans-CN"));
+      .sort((left, right) => left.book.name.localeCompare(right.book.name, this.locale()));
   }
 
   findLikelyDuplicates(bookId: string): LibraryBook[] {
@@ -1103,7 +1126,7 @@ export class BookStore {
       scan.pendingPaths = this.vault.getFiles()
         .filter((file) => this.isSupported(file))
         .map((file) => file.path)
-        .sort((left, right) => left.localeCompare(right, "zh-Hans-CN"));
+      .sort((left, right) => left.localeCompare(right, this.locale()));
       scan.cursor = 0;
       scan.discovered = 0;
       scan.relinked = 0;
@@ -1395,7 +1418,7 @@ export class BookStore {
   }
 
   private normalizeDuplicateName(name: string): string {
-    return name.normalize("NFKC").trim().toLocaleLowerCase("zh-Hans-CN");
+    return name.normalize("NFKC").trim().toLocaleLowerCase(this.locale());
   }
 
   private rebuildBookPathIndex(): void {
@@ -1492,11 +1515,15 @@ export class BookStore {
     if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
     return `book-${Date.now()}-${Math.random().toString(16).slice(2)}-${Math.random().toString(16).slice(2)}`;
   }
+
+  private locale(): string {
+    return this.getUiLanguage() === "en" ? "en" : "zh-Hans-CN";
+  }
 }
 
-export function formatBeijingTime(date = new Date()): string {
+export function formatBeijingTime(language: UiLanguage = "zh-CN", date = new Date()): string {
   const values = new Map(
-    new Intl.DateTimeFormat("zh-CN", {
+    new Intl.DateTimeFormat(language === "en" ? "en-CA" : "zh-CN", {
       timeZone: "Asia/Shanghai",
       year: "numeric",
       month: "2-digit",

@@ -1,4 +1,4 @@
-import { App, FuzzySuggestModal, Menu, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf } from "obsidian";
+import { App, FuzzySuggestModal, Menu, Modal, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf } from "obsidian";
 import {
   BookStore,
   Bookmark,
@@ -27,6 +27,8 @@ import { BookReaderView, BOOK_READER_VIEW_TYPE } from "./reader-view";
 import { BookResearchView, BOOK_RESEARCH_VIEW_TYPE } from "./research-view";
 import { ConfirmActionModal } from "./confirm-action-modal";
 import { chooseBackupToRestore, chooseNewBackupFile, writeNewBackupFile } from "./backup-file-picker";
+import { LocalizedNotice as Notice, getLanguage, observeLocalization, setLanguage, t } from "./i18n";
+import type { UiLanguage } from "./i18n";
 
 const MAX_MANUAL_BACKUP_BYTES = 50 * 1024 * 1024;
 
@@ -42,18 +44,18 @@ class BookPickerModal extends FuzzySuggestModal<TFile> {
     private readonly onChooseBook: (file: TFile) => Promise<void>
   ) {
     super(app);
-    this.setPlaceholder("输入书名、作者、文件夹或扩展名进行筛选");
+    this.setPlaceholder(t("输入书名、作者、文件夹或扩展名进行筛选"));
     this.setInstructions([
-      { command: "↑↓", purpose: "选择" },
-      { command: "↵", purpose: "打开阅读器" },
-      { command: "Esc", purpose: "取消" }
+      { command: "↑↓", purpose: t("选择") },
+      { command: "↵", purpose: t("打开阅读器") },
+      { command: "Esc", purpose: t("取消") }
     ]);
   }
 
   getItems(): TFile[] {
     return this.app.vault.getFiles()
       .filter((file) => SUPPORTED_BOOK_EXTENSIONS.has(file.extension.toLowerCase()))
-      .sort((left, right) => left.path.localeCompare(right.path, "zh-Hans-CN"));
+      .sort((left, right) => left.path.localeCompare(right.path, getLanguage() === "en" ? "en" : "zh-Hans-CN"));
   }
 
   getItemText(file: TFile): string {
@@ -66,13 +68,16 @@ class BookPickerModal extends FuzzySuggestModal<TFile> {
 }
 
 class FirstUseGuideModal extends Modal {
-  constructor(app: App, private readonly openLibrary: () => Promise<void>) {
+  private stopLocalization: (() => void) | undefined;
+
+  constructor(app: App, private readonly plugin: LocalBookReaderPlugin) {
     super(app);
   }
 
   onOpen(): void {
     const { contentEl } = this;
     contentEl.empty();
+    this.stopLocalization?.();
     contentEl.createEl("h2", { text: "欢迎使用 Local Book Reader" });
     contentEl.createEl("p", { text: "这里直接读取 Vault 内的电子书；不会复制、移动、重命名或修改原始书籍。" });
     contentEl.createEl("ol", { cls: "ebook-first-use__steps" }, (list) => {
@@ -80,28 +85,50 @@ class FirstUseGuideModal extends Modal {
       list.createEl("li", { text: "索引只读取文件路径和基础属性，不读取整本正文；之后新增书籍会自动发现。" });
       list.createEl("li", { text: "阅读进度、书签、高亮和摘录保存在插件数据与 Markdown 笔记中，可在设置页导出核心数据备份。" });
     });
+    new Setting(contentEl)
+      .setName("界面语言")
+      .setDesc("选择 English 或简体中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
+      .addDropdown((dropdown) => dropdown
+        .addOption("en", "English")
+        .addOption("zh-CN", "简体中文")
+        .setValue(this.plugin.getUiLanguage())
+        .onChange((value) => void this.plugin.setUiLanguage(value === "en" ? "en" : "zh-CN").then(() => this.onOpen())));
     const controls = new Setting(contentEl);
     controls.addButton((button) => button.setButtonText("稍后探索").onClick(() => this.close()));
     controls.addButton((button) => button.setButtonText("打开个人图书馆").setCta().onClick(() => {
       this.close();
-      void this.openLibrary();
+      void this.plugin.openLibrary();
     }));
+    this.stopLocalization = observeLocalization(contentEl);
   }
 
   onClose(): void {
+    this.stopLocalization?.();
+    this.stopLocalization = undefined;
     this.contentEl.empty();
   }
 }
 
 class LocalBookReaderSettingsTab extends PluginSettingTab {
+  private stopLocalization: (() => void) | undefined;
+
   constructor(app: App, private readonly plugin: LocalBookReaderPlugin) {
     super(app, plugin);
   }
 
   display(): void {
     const { containerEl } = this;
+    this.stopLocalization?.();
     containerEl.empty();
     containerEl.createEl("h2", { text: "Local Book Reader 设置" });
+    new Setting(containerEl)
+      .setName("界面语言")
+      .setDesc("选择 English 或简体中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
+      .addDropdown((dropdown) => dropdown
+        .addOption("en", "English")
+        .addOption("zh-CN", "简体中文")
+        .setValue(this.plugin.getUiLanguage())
+        .onChange((value) => void this.plugin.setUiLanguage(value === "en" ? "en" : "zh-CN").then(() => this.display())));
     let libraryOwnerName = this.plugin.getLibraryOwnerName();
     new Setting(containerEl)
       .setName("馆主名称")
@@ -233,6 +260,7 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
       .addButton((button) => button.setButtonText("清理缓存").setWarning().onClick(() => {
         this.plugin.confirmClearCache(refreshCacheUsage);
       }));
+    this.stopLocalization = observeLocalization(containerEl);
   }
 }
 
@@ -258,6 +286,7 @@ export default class LocalBookReaderPlugin extends Plugin {
   private async startPlugin(): Promise<void> {
     this.bookStore = new BookStore(this.app.vault, this.manifest.id);
     await this.bookStore.initialize((await this.loadData()) as LegacyReaderData | null, this.manifest.version);
+    setLanguage(this.bookStore.getUiLanguage());
     this.noteService = new NoteService(this.app.vault, this.bookStore);
     this.addSettingTab(new LocalBookReaderSettingsTab(this.app, this));
 
@@ -280,48 +309,48 @@ export default class LocalBookReaderPlugin extends Plugin {
       void this.showFirstUseGuide();
     });
 
-    this.addRibbonIcon("book-open", "从个人书库打开电子书", () => {
+    this.addRibbonIcon("book-open", t("从个人书库打开电子书"), () => {
       this.openBookPicker();
     });
-    this.addRibbonIcon("library", "打开个人图书馆", () => {
+    this.addRibbonIcon("library", t("打开个人图书馆"), () => {
       void this.openLibrary();
     });
-    this.addRibbonIcon("quote", "检索摘录、想法和研究笔记", () => {
+    this.addRibbonIcon("quote", t("检索摘录、想法和研究笔记"), () => {
       void this.openResearch();
     });
     this.addCommand({
       id: "show-first-use-guide",
-      name: "显示 Local Book Reader 使用引导",
+      name: t("显示 Local Book Reader 使用引导"),
       callback: () => this.openFirstUseGuide()
     });
 
     this.addCommand({
       id: "open-book-picker",
-      name: "从个人书库打开电子书",
+      name: t("从个人书库打开电子书"),
       callback: () => this.openBookPicker()
     });
 
     this.addCommand({
       id: "open-personal-library",
-      name: "打开个人图书馆",
+      name: t("打开个人图书馆"),
       callback: () => void this.openLibrary()
     });
 
     this.addCommand({
       id: "open-saved-excerpt-search",
-      name: "检索摘录、想法和研究笔记",
+      name: t("检索摘录、想法和研究笔记"),
       callback: () => void this.openResearch()
     });
 
     this.addCommand({
       id: "show-book-files-in-file-explorer",
-      name: "在文件列表显示电子书文件",
+      name: t("在文件列表显示电子书文件"),
       callback: () => void this.showBookFormatsInFileExplorer()
     });
 
     this.addCommand({
       id: "open-current-book",
-      name: "在本地电子书阅读器中打开当前书籍",
+      name: t("在本地电子书阅读器中打开当前书籍"),
       checkCallback: (checking) => {
         const file = this.app.workspace.getActiveFile();
         if (!file || !this.isSupported(file)) {
@@ -392,7 +421,7 @@ export default class LocalBookReaderPlugin extends Plugin {
   }
 
   private openFirstUseGuide(): void {
-    new FirstUseGuideModal(this.app, () => this.openLibrary()).open();
+    new FirstUseGuideModal(this.app, this).open();
   }
 
   onunload(): void {
@@ -445,7 +474,18 @@ export default class LocalBookReaderPlugin extends Plugin {
 
   getLibraryDisplayName(): string {
     const ownerName = this.getLibraryOwnerName();
-    return ownerName ? `${ownerName} 的个人图书馆` : "个人图书馆";
+    return ownerName ? (getLanguage() === "en" ? `${ownerName}'s Personal Library` : `${ownerName} 的个人图书馆`) : t("个人图书馆");
+  }
+
+  getUiLanguage(): UiLanguage {
+    return this.bookStore?.getUiLanguage() ?? "zh-CN";
+  }
+
+  async setUiLanguage(language: UiLanguage): Promise<void> {
+    if (!this.bookStore) throw new Error("插件设置尚未初始化。");
+    await this.bookStore.setUiLanguage(language);
+    setLanguage(language);
+    this.app.workspace.trigger("layout-change");
   }
 
   async setLibraryOwnerName(name: string): Promise<void> {
@@ -890,7 +930,7 @@ export default class LocalBookReaderPlugin extends Plugin {
     }
   }
 
-  private async openLibrary(): Promise<void> {
+  async openLibrary(): Promise<void> {
     const existing = this.app.workspace.getLeavesOfType(BOOK_LIBRARY_VIEW_TYPE)[0];
     if (existing) {
       this.app.workspace.revealLeaf(existing);

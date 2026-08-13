@@ -7,9 +7,12 @@ personal ebooks in the active Vault. It keeps ebook handling local, treats
 original ebook files as read-only input, and stores research results as normal
 Markdown.
 
-> **Release status:** `0.3.0` is the first GitHub public-preview version.
+> **Release status:** `0.3.1` is the latest GitHub public-preview version.
 > Download the dedicated installation ZIP from the GitHub Release. It is not
 > yet available in the Obsidian community-plugin directory.
+>
+> **Community-directory status:** `0.3.1` uses the standard three-runtime-file
+> layout, but it has not been submitted to the Obsidian community directory.
 
 ## What it does
 
@@ -50,7 +53,10 @@ Vault at a location the user selects. Read [PRIVACY.md](PRIVACY.md) and
 - Obsidian desktop `1.12.7` or newer
 - Windows desktop; this preview has not yet been validated on macOS or Linux
 - A Vault containing ebooks you are permitted to read
-- Simplified Chinese UI; English localization is not yet available
+- English and Simplified Chinese interfaces. Existing installations retain
+  Simplified Chinese; new installations begin in English and can switch in
+  **Local Book Reader settings**. Switching never renames, moves, or rewrites
+  existing ebooks, notes, folders, or reading data.
 
 Mobile devices are not supported.
 
@@ -72,9 +78,10 @@ pnpm install --frozen-lockfile
 pnpm run build
 ```
 
-The production runtime artifacts are `main.js`, `manifest.json`, `styles.css`,
-and the bundled `pdf.worker.min.mjs`. Do not commit generated runtime artifacts;
-they belong in the GitHub Release package.
+The production runtime artifacts are `main.js`, `manifest.json`, and
+`styles.css`. The PDF Worker is bundled inside `main.js`, so the build follows
+the standard Obsidian community-plugin installation layout. Do not commit
+generated runtime artifacts; they belong in GitHub Release attachments.
 
 ## Known boundaries
 
