@@ -1,6 +1,6 @@
 # Local Book Reader
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当前库（Vault）中阅读和整理个人电子书。它在本地处理电子书，将原始电子书作为只读内容，并把研究成果保存为普通 Markdown 文件。
 

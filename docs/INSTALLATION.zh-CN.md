@@ -1,6 +1,6 @@
 # 安装、升级与卸载
 
-[English](INSTALLATION.md) | [简体中文](INSTALLATION.zh-CN.md)
+[English](INSTALLATION.md) | [简体中文](INSTALLATION.zh-CN.md) | [繁體中文](INSTALLATION.zh-TW.md)
 
 ## 开始前
 
