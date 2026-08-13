@@ -1,7 +1,8 @@
-import { App, FileView, Modal, Notice, TFile, WorkspaceLeaf } from "obsidian";
+import { App, FileView, Modal, TFile, WorkspaceLeaf } from "obsidian";
 import type { Bookmark, BookmarkLocator, BookMetadata, BookMetadataInput, Excerpt, ExcerptLocator, ReaderAppearanceSettings } from "./book-store";
 import LocalBookReaderPlugin from "./main";
 import { PdfSession, type PdfTextHighlight } from "./pdf-session";
+import { LocalizedNotice as Notice, localizeTree, observeLocalization } from "./i18n";
 
 export const BOOK_READER_VIEW_TYPE = "local-book-reader-view";
 
@@ -127,12 +128,13 @@ class BookInfoModal extends Modal {
       if (!value) continue;
       const row = contentEl.createDiv({ cls: "ebook-reader__book-info-row" });
       row.createSpan({ cls: "ebook-reader__book-info-label", text: `${label}：` });
-      row.createSpan({ text: value });
+      row.createSpan({ text: value, attr: { "data-local-book-reader-no-localize": "true" } });
     }
     contentEl.createEl("p", {
       cls: "ebook-reader__book-info-hint",
       text: this.metadata ? "信息仅在打开本书时从本地文件按需读取并缓存；原始电子书不会被修改。" : "当前格式尚无可安全读取的详细元数据，将继续使用文件名和分类信息。"
     });
+    localizeTree(contentEl);
   }
 
   onClose(): void {
@@ -174,6 +176,7 @@ class BookmarkModal extends Modal {
       if (event.key === "Enter") save();
     };
     window.setTimeout(() => input.focus(), 0);
+    localizeTree(this.contentEl);
   }
 }
 
@@ -208,6 +211,7 @@ class ThoughtModal extends Modal {
       });
     };
     window.setTimeout(() => input.focus(), 0);
+    localizeTree(this.contentEl);
   }
 }
 
@@ -244,6 +248,7 @@ class ExcerptModal extends Modal {
       });
     };
     window.setTimeout(() => input.focus(), 0);
+    localizeTree(this.contentEl);
   }
 }
 
@@ -307,6 +312,7 @@ class AppearanceModal extends Modal {
         new Notice("无法保存阅读外观设置；原始电子书没有被修改。");
       });
     };
+    localizeTree(this.contentEl);
   }
 }
 
@@ -370,6 +376,7 @@ class SearchModal extends Modal {
       if (event.key === "Enter") run();
     };
     window.setTimeout(() => input.focus(), 0);
+    localizeTree(this.contentEl);
   }
 
   onClose(): void {
@@ -408,6 +415,7 @@ export class BookReaderView extends FileView {
   private selectedExcerpt: SelectedExcerpt | undefined;
   private navigationInFlight = false;
   private activeSearchResultCfi: string | undefined;
+  private stopLocalization: (() => void) | undefined;
 
   constructor(leaf: WorkspaceLeaf, private readonly plugin: LocalBookReaderPlugin) {
     super(leaf);
@@ -427,6 +435,7 @@ export class BookReaderView extends FileView {
 
   async onOpen(): Promise<void> {
     this.contentEl.addClass("ebook-reader__view");
+    this.stopLocalization = observeLocalization(this.contentEl);
     this.renderEmptyState();
   }
 
@@ -435,6 +444,8 @@ export class BookReaderView extends FileView {
   }
 
   async onClose(): Promise<void> {
+    this.stopLocalization?.();
+    this.stopLocalization = undefined;
     // A closing tab should not wait for the optional PDF worker teardown. A
     // reflow reader is detached here; full Foliate disposal remains in use
     // when this ReaderView is reused for another book.
@@ -480,7 +491,7 @@ export class BookReaderView extends FileView {
     const extension = file.extension.toLowerCase();
     const isPdf = extension === "pdf";
     const toolbar = this.contentEl.createDiv({ cls: "ebook-reader__toolbar" });
-    toolbar.createSpan({ cls: "ebook-reader__title", text: file.basename });
+    toolbar.createSpan({ cls: "ebook-reader__title", text: file.basename, attr: { "data-local-book-reader-no-localize": "true" } });
     this.readingStatusEl = toolbar.createSpan({ cls: "ebook-reader__reading-status" });
     const info = toolbar.createEl("button", { text: "书籍信息", attr: { type: "button" } });
     const previous = toolbar.createEl("button", { text: "上一页", attr: { type: "button" } });
@@ -750,7 +761,7 @@ export class BookReaderView extends FileView {
     this.stage.addClass("ebook-reader__pdf-stage");
     this.toc = [];
     this.renderTocPanel();
-    this.pdfSession = await PdfSession.open(this.app, file, "local-book-reader");
+    this.pdfSession = await PdfSession.open(this.app, file);
     this.registerDomEvent(this.stage, "mouseup", () => this.capturePdfSelection(file));
     this.registerDomEvent(this.stage, "keyup", () => this.capturePdfSelection(file));
     const savedPage = this.plugin.getPdfPage(file.path) ?? 1;
@@ -1385,7 +1396,7 @@ export class BookReaderView extends FileView {
   private renderBookmarkItem(bookmark: Bookmark): void {
     if (!this.bookmarkPanel || !this.currentFile) return;
     const row = this.bookmarkPanel.createDiv({ cls: "ebook-reader__bookmark-row" });
-    row.createDiv({ cls: "ebook-reader__bookmark-label", text: bookmark.label || "未命名书签" });
+    row.createDiv({ cls: "ebook-reader__bookmark-label", text: bookmark.label || "未命名书签", attr: bookmark.label ? { "data-local-book-reader-no-localize": "true" } : undefined });
     row.createDiv({ cls: "ebook-reader__bookmark-time", text: bookmark.createdAt });
     const jump = row.createEl("button", { text: "跳转" });
     jump.type = "button";

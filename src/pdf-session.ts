@@ -1,4 +1,5 @@
 import { App, TFile } from "obsidian";
+import workerSource from "pdfjs-dist/legacy/build/pdf.worker.min.mjs";
 
 type PdfViewport = {
   width: number;
@@ -41,15 +42,12 @@ export interface PdfRenderedPage {
   text: string;
 }
 
-async function createWorkerUrl(app: App, pluginId: string): Promise<string> {
-  const configDir = app.vault.configDir || ".obsidian";
-  const resourceUrl = app.vault.adapter.getResourcePath(`${configDir}/plugins/${pluginId}/pdf.worker.min.mjs`);
-  const response = await fetch(resourceUrl);
-  if (!response.ok) throw new Error(`无法读取本地 PDF Worker（${response.status}）。`);
+function createWorkerUrl(): string {
   // Obsidian's app:// resources are deliberately isolated from the app shell,
-  // so Chromium cannot construct a module Worker from that URL directly. A
-  // same-renderer blob keeps the bundled Worker fully local and offline.
-  return URL.createObjectURL(new Blob([await response.text()], { type: "text/javascript" }));
+  // so Chromium cannot construct a module Worker from that URL directly. The
+  // worker source is bundled into main.js, then a same-renderer blob keeps it
+  // fully local and offline without requiring an extra installed asset.
+  return URL.createObjectURL(new Blob([workerSource], { type: "text/javascript" }));
 }
 
 /** A deliberately small PDF.js adapter. It only reads the selected Vault file. */
@@ -63,9 +61,9 @@ export class PdfSession {
     private readonly pdfjs: PdfJsModule
   ) {}
 
-  static async open(app: App, file: TFile, pluginId: string): Promise<PdfSession> {
+  static async open(app: App, file: TFile): Promise<PdfSession> {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs") as unknown as PdfJsModule;
-    const workerBlobUrl = await createWorkerUrl(app, pluginId);
+    const workerBlobUrl = createWorkerUrl();
     pdfjs.GlobalWorkerOptions.workerSrc = workerBlobUrl;
     const bytes = new Uint8Array(await app.vault.readBinary(file));
     const loadingTask = pdfjs.getDocument({ data: bytes }) as unknown as PdfLoadingTask;

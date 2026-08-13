@@ -1,6 +1,7 @@
-import { ItemView, Menu, Modal, Notice, WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, Modal, WorkspaceLeaf } from "obsidian";
 import type { BookReadingState, LibraryBook, ReadingStatus, ScanProgress } from "./book-store";
 import LocalBookReaderPlugin from "./main";
+import { LocalizedNotice as Notice, getLanguage, observeLocalization } from "./i18n";
 
 export const BOOK_LIBRARY_VIEW_TYPE = "local-book-reader-library";
 
@@ -14,6 +15,7 @@ const VIRTUAL_ROW_HEIGHT = 80;
 const VIRTUAL_OVERSCAN = 6;
 
 class SuspectedDuplicateModal extends Modal {
+  private stopLocalization: (() => void) | undefined;
   constructor(
     app: import("obsidian").App,
     private readonly source: LibraryBook,
@@ -30,7 +32,7 @@ class SuspectedDuplicateModal extends Modal {
       text: "仅按同名、同格式和同文件大小列出候选，不读取正文或计算文件哈希，因此结果只供人工核对。插件不会自动合并、移动、修改或删除任何电子书。"
     });
     contentEl.createEl("h3", { text: "当前书籍" });
-    contentEl.createEl("code", { text: this.source.book.path });
+    contentEl.createEl("code", { text: this.source.book.path, attr: { "data-local-book-reader-no-localize": "true" } });
     if (this.candidates.length === 0) {
       contentEl.createEl("p", { text: "没有发现符合当前保守规则的疑似重复文件。" });
       return;
@@ -38,14 +40,17 @@ class SuspectedDuplicateModal extends Modal {
     contentEl.createEl("h3", { text: `候选文件（${this.candidates.length}）` });
     const list = contentEl.createEl("ul");
     for (const item of this.candidates) list.createEl("li", { text: item.book.path });
+    this.stopLocalization = observeLocalization(contentEl);
   }
 
   onClose(): void {
+    this.stopLocalization?.();
     this.contentEl.empty();
   }
 }
 
 export class BookLibraryView extends ItemView {
+  private stopLocalization: (() => void) | undefined;
   private query = "";
   private format = "all";
   private status = "all";
@@ -77,10 +82,12 @@ export class BookLibraryView extends ItemView {
   }
 
   async onClose(): Promise<void> {
+    this.stopLocalization?.();
     this.cancelPendingResultRender();
   }
 
   async onOpen(): Promise<void> {
+    this.stopLocalization = observeLocalization(this.contentEl);
     this.render();
   }
 
@@ -181,7 +188,7 @@ export class BookLibraryView extends ItemView {
     const category = filters.createEl("select", { attr: { "aria-label": "按分类筛选" } });
     this.addOption(category, "all", "全部分类");
     [...new Set(allBooks.map((item) => this.categoryOf(item.book.path)).filter(Boolean))]
-      .sort((left, right) => left.localeCompare(right, "zh-Hans-CN"))
+      .sort((left, right) => left.localeCompare(right, getLanguage() === "en" ? "en" : "zh-Hans-CN"))
       .forEach((name) => this.addOption(category, name, name));
     category.value = this.category;
     category.onchange = () => {
@@ -255,7 +262,7 @@ export class BookLibraryView extends ItemView {
   private renderBookList(container: HTMLElement, allBooks: LibraryBook[]): void {
     // Normalize the query once. With no query, do not touch every book's
     // Chinese title/path just to prove that an empty string matches it.
-    const normalizedQuery = this.query.trim().toLocaleLowerCase("zh-Hans-CN");
+    const normalizedQuery = this.query.trim().toLocaleLowerCase(getLanguage() === "en" ? "en" : "zh-Hans-CN");
     const books = allBooks.filter((item) => this.matches(item, normalizedQuery));
     const summary = container.createDiv({ cls: "ebook-library__summary" });
     summary.setText(`显示 ${books.length} / ${allBooks.length} 本已索引书籍`);
@@ -287,7 +294,7 @@ export class BookLibraryView extends ItemView {
   private renderBookRow(list: HTMLElement, item: LibraryBook): void {
     const row = list.createDiv({ cls: "ebook-library__row" });
     const metadata = item.book.metadata?.sourceModifiedAt === item.book.modifiedAt ? item.book.metadata : undefined;
-    const title = row.createDiv({ cls: "ebook-library__book-title", text: metadata?.title ?? item.book.name });
+    const title = row.createDiv({ cls: "ebook-library__book-title", text: metadata?.title ?? item.book.name, attr: { "data-local-book-reader-no-localize": "true" } });
     title.title = item.book.path;
     const folder = this.folderOf(item.book.path) || "根目录";
     const progress = this.progressText(item.reading);
@@ -386,7 +393,7 @@ export class BookLibraryView extends ItemView {
     if (normalizedQuery) {
       let searchable = this.searchableTextByBookId.get(item.book.bookId);
       if (searchable === undefined) {
-        searchable = `${item.book.name}\n${item.book.path}`.toLocaleLowerCase("zh-Hans-CN");
+      searchable = `${item.book.name}\n${item.book.path}`.toLocaleLowerCase(getLanguage() === "en" ? "en" : "zh-Hans-CN");
         this.searchableTextByBookId.set(item.book.bookId, searchable);
       }
       if (!searchable.includes(normalizedQuery)) return false;

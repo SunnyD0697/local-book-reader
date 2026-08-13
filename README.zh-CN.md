@@ -4,7 +4,9 @@
 
 Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当前库（Vault）中阅读和整理个人电子书。它在本地处理电子书，将原始电子书作为只读内容，并把研究成果保存为普通 Markdown 文件。
 
-> **发布状态：** `0.3.0` 是首个 GitHub 公开预览版本。专用安装 ZIP 可从 GitHub Release 下载，暂未进入 Obsidian 社区插件目录。
+> **发布状态：** `0.3.1` 是最新的 GitHub 公开预览版本。专用安装 ZIP 可从 GitHub Release 下载，暂未进入 Obsidian 社区插件目录。
+>
+> **社区目录状态：** `0.3.1` 已采用标准的三个运行文件布局，但尚未提交到 Obsidian 社区插件目录。
 
 ## 可以做什么
 
@@ -33,7 +35,7 @@ Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当�
 - Obsidian 桌面版 `1.12.7` 或更高版本
 - Windows 桌面端；本预览版尚未在 macOS 或 Linux 上验证
 - 一个存有你有权阅读的电子书的 Vault
-- 界面为简体中文；暂未提供英文界面
+- 提供英文和简体中文界面。已有安装会继续保持简体中文；新安装默认英文，可在 **Local Book Reader 设置** 中切换。切换不会重命名、移动或改写已有电子书、笔记、目录或阅读数据。
 
 不支持手机或平板设备。
 
@@ -52,7 +54,7 @@ pnpm install --frozen-lockfile
 pnpm run build
 ```
 
-正式运行所需的文件为 `main.js`、`manifest.json`、`styles.css` 和随附的 `pdf.worker.min.mjs`。不要将生成的运行文件提交到代码仓库；它们应放入 GitHub Release 的发布包中。
+正式运行所需的文件为 `main.js`、`manifest.json` 和 `styles.css`。PDF Worker 已内置于 `main.js`，因此构建结果符合 Obsidian 社区插件的标准安装布局。不要将生成的运行文件提交到代码仓库；它们应作为 GitHub Release 的附件提供。
 
 ## 已知边界
 

@@ -1,4 +1,5 @@
-import { App, Modal, Notice, Setting } from "obsidian";
+import { App, Modal, Setting } from "obsidian";
+import { LocalizedNotice as Notice, localizeTree } from "./i18n";
 
 export interface ConfirmActionOptions {
   title: string;
@@ -30,6 +31,7 @@ export class ConfirmActionModal extends Modal {
         new Notice(`操作未完成${detail} 现有阅读数据已保留。`);
       });
     }));
+    localizeTree(contentEl);
   }
 
   onClose(): void {

@@ -16,33 +16,35 @@
 
 1. Open the repository's
    [Releases page](https://github.com/SunnyD0697/local-book-reader/releases).
-2. Download `local-book-reader-0.3.0.zip`. Do **not** download GitHub's
+2. Download `local-book-reader-0.3.1.zip`. Do **not** download GitHub's
    automatic **Source code (zip)** archive; it is source code, not an install
    package.
 3. Close Obsidian, or disable Local Book Reader while replacing its files.
 4. Create `<Vault>/.obsidian/plugins/local-book-reader/`.
 5. Extract the dedicated plugin ZIP into that directory. Confirm that these
-   four runtime files are directly inside the `local-book-reader` directory:
+   three runtime files are directly inside the `local-book-reader` directory:
    - `main.js`
    - `manifest.json`
    - `styles.css`
-   - `pdf.worker.min.mjs`
-6. Reopen Obsidian, enable **Local Book Reader** in Community plugins, and use
-   **从个人书库打开电子书** or **打开个人图书馆**.
+6. Reopen Obsidian and enable **Local Book Reader** in Community plugins. New
+   installations begin in English; choose **Interface language** in **Local
+   Book Reader settings** at any time to switch between English and Simplified
+   Chinese. The choice never changes ebooks, notes, folders, or reading data.
 
 The ZIP may also contain `LICENSE`, `THIRD_PARTY_NOTICES.md`, and a `LICENSES`
 directory; these are license documents and do not affect plugin operation.
 
 Local Book Reader is not yet available in the Obsidian community-plugin
-directory. The standard community installer does not currently retrieve the
-additional PDF Worker required by this build.
+directory. Version `0.3.1` has the standard runtime layout, but community
+directory submission remains a separate future decision.
 
 ## Build and install from source
 
 1. Install Node.js `22.13.0` or newer and pnpm `11.9.0`.
 2. Run `pnpm install --frozen-lockfile` and `pnpm run build` in the repository.
-3. Follow steps 3–6 above, copying the four generated runtime artifacts instead
-   of extracting the release ZIP.
+3. Follow steps 3–6 above. The current public `0.3.1` ZIP and source build use
+   the standard three runtime files: `main.js`, `manifest.json`, and
+   `styles.css`. The older `0.3.0` release used a fourth PDF Worker file.
 
 The first-use guide is shown inside Obsidian. The plugin keeps ebook extension
 handlers under Obsidian's control to avoid startup freezes with large
@@ -53,7 +55,8 @@ libraries.
 1. Back up `<Vault>/.obsidian/plugins/local-book-reader/data/` if it exists.
 2. Download the dedicated plugin ZIP for the new release.
 3. Disable the plugin or close Obsidian.
-4. Replace only the four runtime files listed above.
+4. Replace the three runtime files listed above. When upgrading from `0.3.0`,
+   you may also remove the no-longer-used `pdf.worker.min.mjs` file.
 5. Reopen Obsidian and confirm that the plugin loads before opening a book.
 
 The plugin may create version-bound backups of its own index, reading state,

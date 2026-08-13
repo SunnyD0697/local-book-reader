@@ -1,5 +1,6 @@
 import { TFile, Vault, normalizePath } from "obsidian";
 import { BookmarkLocator, BookStore, Excerpt, formatBeijingTime, StoredExcerpt } from "./book-store";
+import { getLanguage } from "./i18n";
 
 export interface ResearchMarkdownEntry {
   kind: "thought" | "research-note";
@@ -23,14 +24,15 @@ export class NoteService {
     const book = this.books.getBookByPath(file.path);
     if (!book) throw new Error("此书尚未建立阅读身份，无法创建读书笔记。");
     const note = await this.openOrCreateNote(file);
-    const createdAt = formatBeijingTime();
+    const createdAt = formatBeijingTime(getLanguage());
+    const isEnglish = getLanguage() === "en";
     const annotationId = `anno-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
     const source = this.describeLocator(locator);
     const block = [
       "",
-      `> [!note] 想法`,
-      `> 来源：${source} · ${book.extension.toUpperCase()}`,
-      `> 创建：${createdAt}`,
+      `> [!note] ${isEnglish ? "Thought" : "想法"}`,
+      `> ${isEnglish ? "Source" : "来源"}: ${source} · ${book.extension.toUpperCase()}`,
+      `> ${isEnglish ? "Created" : "创建"}: ${createdAt}`,
       ...this.markdownTags(tags),
       ">",
       ...thought.trim().split(/\r?\n/).map((line) => `> ${line}`),
@@ -47,16 +49,17 @@ export class NoteService {
     if (!book) throw new Error("This book does not have a reading identity yet.");
     const note = await this.openOrCreateNote(file);
     const source = this.describeExcerptLocator(excerpt);
+    const isEnglish = getLanguage() === "en";
     const quoteLines = excerpt.text.split(/\r?\n/).map((line) => `> ${line}`);
     const thoughtLines = excerpt.note
-      ? [">", `> **随想**：${excerpt.note}`]
+      ? [">", `> **${isEnglish ? "Note" : "随想"}**: ${excerpt.note}`]
       : [];
     const block = [
       "",
-      "> [!quote] 摘录",
-      `> 来源：${source} · ${book.extension.toUpperCase()}`,
-      `> 创建：${excerpt.createdAt}`,
-      `> 定位：[返回原文](obsidian://local-book-reader?annotation=${encodeURIComponent(excerpt.excerptId)})`,
+      `> [!quote] ${isEnglish ? "Excerpt" : "摘录"}`,
+      `> ${isEnglish ? "Source" : "来源"}: ${source} · ${book.extension.toUpperCase()}`,
+      `> ${isEnglish ? "Created" : "创建"}: ${excerpt.createdAt}`,
+      `> ${isEnglish ? "Location" : "定位"}: [${isEnglish ? "Return to source" : "返回原文"}](obsidian://local-book-reader?annotation=${encodeURIComponent(excerpt.excerptId)})`,
       ...this.markdownTags(excerpt.tags ?? []),
       ">",
       ...quoteLines,
@@ -81,8 +84,8 @@ export class NoteService {
       ? existing
       : await this.vault.create(path, [
         "---",
-        "type: 主题研究",
-        `created: ${JSON.stringify(formatBeijingTime())}`,
+        `type: ${getLanguage() === "en" ? "research" : "主题研究"}`,
+        `created: ${JSON.stringify(formatBeijingTime(getLanguage()))}`,
         "---",
         "",
         `# ${normalizedTitle}`,
@@ -119,7 +122,7 @@ export class NoteService {
         });
       }
     }
-    return entries.sort((left, right) => (right.createdAt ?? "").localeCompare(left.createdAt ?? "", "zh-Hans-CN"));
+    return entries.sort((left, right) => (right.createdAt ?? "").localeCompare(left.createdAt ?? "", getLanguage() === "en" ? "en" : "zh-Hans-CN"));
   }
 
   private async ensureNote(bookId: string, title: string, path: string, extension: string, status: string): Promise<TFile> {
@@ -134,7 +137,7 @@ export class NoteService {
       path,
       extension,
       status,
-      createdAt: formatBeijingTime()
+      createdAt: formatBeijingTime(getLanguage())
     }));
   }
 
@@ -143,33 +146,34 @@ export class NoteService {
   }
 
   private safeTitle(title: string): string {
-    return (title.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim() || "未命名书籍").slice(0, 80);
+    return (title.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim() || (getLanguage() === "en" ? "Untitled book" : "未命名书籍")).slice(0, 80);
   }
 
   private describeLocator(locator: BookmarkLocator): string {
-    if (locator.type === "pdf") return `PDF 第 ${locator.page} 页`;
+    if (locator.type === "pdf") return getLanguage() === "en" ? `PDF page ${locator.page}` : `PDF 第 ${locator.page} 页`;
     const percent = `${Math.round((locator.type === "reflow" ? locator.fraction : locator.progress) * 100)}%`;
-    return `阅读进度 ${percent}`;
+    return getLanguage() === "en" ? `Reading progress ${percent}` : `阅读进度 ${percent}`;
   }
 
   private describeExcerptLocator(excerpt: Excerpt): string {
-    if (excerpt.locator.type === "pdf") return `PDF 第 ${excerpt.locator.page} 页`;
+    if (excerpt.locator.type === "pdf") return getLanguage() === "en" ? `PDF page ${excerpt.locator.page}` : `PDF 第 ${excerpt.locator.page} 页`;
     if (excerpt.locator.type === "reflow") {
       const chapter = excerpt.locator.chapter?.trim();
-      return `${chapter ? `${chapter} · ` : ""}阅读进度 ${Math.round(excerpt.locator.fraction * 100)}%`;
+      return `${chapter ? `${chapter} · ` : ""}${getLanguage() === "en" ? "Reading progress" : "阅读进度"} ${Math.round(excerpt.locator.fraction * 100)}%`;
     }
-    return `阅读进度 ${Math.round(excerpt.locator.progress * 100)}%`;
+    return `${getLanguage() === "en" ? "Reading progress" : "阅读进度"} ${Math.round(excerpt.locator.progress * 100)}%`;
   }
 
   private renderResearchEntry(entry: StoredExcerpt): string {
     const { book, excerpt } = entry;
-    const noteLines = excerpt.note ? [">", `> **随想**：${excerpt.note}`] : [];
+    const isEnglish = getLanguage() === "en";
+    const noteLines = excerpt.note ? [">", `> **${isEnglish ? "Note" : "随想"}**: ${excerpt.note}`] : [];
     return [
       "",
       `## ${book.name}`,
-      `> 来源：${this.describeExcerptLocator(excerpt)} · ${book.extension.toUpperCase()}`,
-      `> 创建：${excerpt.createdAt}`,
-      `> 定位：[返回原文](obsidian://local-book-reader?annotation=${encodeURIComponent(excerpt.excerptId)})`,
+      `> ${isEnglish ? "Source" : "来源"}: ${this.describeExcerptLocator(excerpt)} · ${book.extension.toUpperCase()}`,
+      `> ${isEnglish ? "Created" : "创建"}: ${excerpt.createdAt}`,
+      `> ${isEnglish ? "Location" : "定位"}: [${isEnglish ? "Return to source" : "返回原文"}](obsidian://local-book-reader?annotation=${encodeURIComponent(excerpt.excerptId)})`,
       ...this.markdownTags(excerpt.tags ?? []),
       ">",
       ...excerpt.text.split(/\r?\n/).map((line) => `> ${line}`),
@@ -180,12 +184,12 @@ export class NoteService {
 
   private extractThoughts(file: TFile, content: string): ResearchMarkdownEntry[] {
     const entries: ResearchMarkdownEntry[] = [];
-    const pattern = /^> \[!note\] 想法\r?\n([\s\S]*?)^\^anno-[^\r\n]+\r?$/gm;
+    const pattern = /^> \[!note\] (?:想法|Thought)\r?\n([\s\S]*?)^\^anno-[^\r\n]+\r?$/gm;
     for (const match of content.matchAll(pattern)) {
       const block = match[1];
       const text = block
         .split(/\r?\n/)
-        .filter((line) => !/^> (?:来源|创建|标签)：/.test(line))
+        .filter((line) => !/^> (?:来源|创建|标签)：/.test(line) && !/^> (?:Source|Created|Tags):/.test(line))
         .map((line) => line.replace(/^> ?/, ""))
         .join("\n")
         .trim();
@@ -214,7 +218,7 @@ export class NoteService {
   }
 
   private extractCreatedAt(content: string): string | undefined {
-    return content.match(/^> 创建：([^\r\n]+)$/m)?.[1]?.trim()
+    return content.match(/^> (?:创建|Created)[:：]\s*([^\r\n]+)$/m)?.[1]?.trim()
       ?? content.match(/^created:\s*["']?([^"'\r\n]+)["']?\s*$/m)?.[1]?.trim();
   }
 
@@ -254,6 +258,6 @@ export class NoteService {
 
   private markdownTags(tags: string[]): string[] {
     const safe = [...new Set(tags.map((tag) => tag.replace(/^#+/, "").replace(/[^\p{L}\p{N}_/-]/gu, "").slice(0, 60)).filter(Boolean))];
-    return safe.length ? [`> 标签：${safe.map((tag) => `#${tag}`).join(" ")}`] : [];
+    return safe.length ? [`> ${getLanguage() === "en" ? "Tags" : "标签"}${getLanguage() === "en" ? ":" : "："}${safe.map((tag) => `#${tag}`).join(" ")}`] : [];
   }
 }
