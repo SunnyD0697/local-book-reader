@@ -1,6 +1,6 @@
 # Local Book Reader
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 Local Book Reader is a desktop-only Obsidian plugin for reading and organizing
 personal ebooks in the active Vault. It keeps ebook handling local, treats
