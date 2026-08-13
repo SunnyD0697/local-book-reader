@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.3.3 — community review fix
+
+- Removed the redundant word `Obsidian` from the fixed community-directory
+  description and added the required terminal punctuation.
+- No reader behavior, user data, supported format, or interface language
+  changed.
+
 ## 0.3.2 — current GitHub public preview
 
 - Bundled the PDF.js Worker into `main.js`, removing the extra runtime file

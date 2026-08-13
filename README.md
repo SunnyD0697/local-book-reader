@@ -11,8 +11,9 @@ Markdown.
 > Download the dedicated installation ZIP from the GitHub Release. It is not
 > yet available in the Obsidian community-plugin directory.
 >
-> **Community-directory status:** `0.3.2` uses the standard three-runtime-file
-> layout, but it has not been submitted to the Obsidian community directory.
+> **Community-directory status:** `0.3.3` is an unreleased review-fix candidate
+> for the community directory. It changes only the fixed directory description;
+> it is not available to install yet.
 
 ## What it does
 
