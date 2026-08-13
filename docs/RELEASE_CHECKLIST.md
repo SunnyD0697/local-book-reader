@@ -85,3 +85,6 @@ GitHub Release, or submitting to the Obsidian community directory.
   installer does not unpack the dedicated ZIP.
 - [ ] Obtain separate user approval before submitting the repository through
   the Obsidian community directory.
+- [ ] If the directory rejects a fixed `manifest.json` field, increment the
+  plugin version, publish a new three-asset Release, and re-run all applicable
+  local and public checks. Do not silently replace an existing release asset.
