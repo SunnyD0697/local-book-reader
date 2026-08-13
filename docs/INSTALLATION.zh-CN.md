@@ -13,7 +13,7 @@
 ## 安装 GitHub 公开预览版
 
 1. 打开仓库的 [Releases 页面](https://github.com/SunnyD0697/local-book-reader/releases)。
-2. 下载 `local-book-reader-0.3.2.zip`。**不要**下载 GitHub 自动生成的 **Source code (zip)**；它是源代码，不是安装包。
+2. 下载 `local-book-reader-0.3.3.zip`。**不要**下载 GitHub 自动生成的 **Source code (zip)**；它是源代码，不是安装包。
 3. 关闭 Obsidian，或在替换文件前先停用 Local Book Reader。
 4. 创建文件夹：`<Vault>/.obsidian/plugins/local-book-reader/`。
 5. 将专用插件 ZIP 的内容解压到该文件夹中。确认以下三个运行文件直接位于 `local-book-reader` 文件夹内：
@@ -24,7 +24,7 @@
 
 如需在解压前校验下载的 ZIP，可使用同一 Release 附带的 `SHA256SUMS.txt`。
 
-Local Book Reader 尚未进入 Obsidian 社区插件目录。`0.3.2` 已采用标准运行文件布局，但是否提交社区目录仍是后续独立决定。
+Local Book Reader 尚未进入 Obsidian 社区插件目录。`0.3.3` 已采用标准运行文件布局，但是否提交社区目录仍是后续独立决定。
 
 ## 从源代码构建并安装
 

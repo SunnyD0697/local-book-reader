@@ -121,7 +121,9 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     this.stopLocalization?.();
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Local Book Reader 设置" });
+    new Setting(containerEl)
+      .setName("Local Book Reader 设置")
+      .setHeading();
     new Setting(containerEl)
       .setName("界面语言")
       .setDesc("选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
@@ -217,7 +219,9 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
           new Notice(value === "window" ? "后续打开的电子书将使用独立阅读窗口。" : "后续打开的电子书将使用 Obsidian 标签页。");
         }));
 
-    containerEl.createEl("h3", { text: "阅读数据维护" });
+    new Setting(containerEl)
+      .setName("阅读数据维护")
+      .setHeading();
     new Setting(containerEl)
       .setName("清除全部最近阅读历史")
       .setDesc("仅清除“最近阅读”的打开时间记录。不会删除进度、书签、高亮、摘录、想法、收藏、Markdown 笔记或原始电子书。")
@@ -231,7 +235,9 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
         this.plugin.confirmResetReadingProgress();
       }));
 
-    containerEl.createEl("h3", { text: "备份与恢复" });
+    new Setting(containerEl)
+      .setName("备份与恢复")
+      .setHeading();
     new Setting(containerEl)
       .setName("导出核心数据备份")
       .setDesc("导出插件设置、图书索引、进度、书签、状态、收藏和本地摘录/高亮定位数据。不会导出电子书、Markdown 笔记、封面或缓存；由你通过系统窗口选择保存位置。")
@@ -245,7 +251,9 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
         void this.plugin.chooseCoreDataBackupForRestore();
       }));
 
-    containerEl.createEl("h3", { text: "缓存维护" });
+    new Setting(containerEl)
+      .setName("缓存维护")
+      .setHeading();
     const cacheUsage = containerEl.createDiv({ cls: "ebook-settings__cache-usage", text: "正在读取缓存占用…" });
     const refreshCacheUsage = () => {
       void this.plugin.getDataStorageUsage().then((usage) => {

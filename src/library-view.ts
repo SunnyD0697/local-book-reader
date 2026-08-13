@@ -1,7 +1,7 @@
 import { ItemView, Menu, Modal, WorkspaceLeaf } from "obsidian";
 import type { BookReadingState, LibraryBook, ReadingStatus, ScanProgress } from "./book-store";
 import LocalBookReaderPlugin from "./main";
-import { LocalizedNotice as Notice, getLanguage, localizeTree, observeLocalization } from "./i18n";
+import { LocalizedNotice as Notice, getLanguage, localizeTree, observeLocalization, t } from "./i18n";
 
 export const BOOK_LIBRARY_VIEW_TYPE = "local-book-reader-library";
 
@@ -298,11 +298,14 @@ export class BookLibraryView extends ItemView {
     const metadata = item.book.metadata?.sourceModifiedAt === item.book.modifiedAt ? item.book.metadata : undefined;
     const title = row.createDiv({ cls: "ebook-library__book-title", text: metadata?.title ?? item.book.name, attr: { "data-local-book-reader-no-localize": "true" } });
     title.title = item.book.path;
-    const folder = this.folderOf(item.book.path) || "根目录";
-    const progress = this.progressText(item.reading);
+    const rawFolder = this.folderOf(item.book.path);
+    const folder = rawFolder || t("根目录");
+    const progress = t(this.progressText(item.reading));
+    const readingStatus = t(item.book.isMissing ? "文件缺失" : STATUS_LABELS[item.reading.status]);
     row.createDiv({
       cls: "ebook-library__book-meta",
-      text: `${item.book.extension.toUpperCase()}${metadata?.authors?.length ? ` · ${metadata.authors.join("、")}` : ""} · ${folder} · ${item.book.isMissing ? "文件缺失" : STATUS_LABELS[item.reading.status]} · ${progress}`
+      text: `${item.book.extension.toUpperCase()}${metadata?.authors?.length ? ` · ${metadata.authors.join("、")}` : ""} · ${folder} · ${readingStatus} · ${progress}`,
+      attr: { "data-local-book-reader-no-localize": "true" }
     });
 
     const actions = row.createDiv({ cls: "ebook-library__book-actions" });

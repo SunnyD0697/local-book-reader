@@ -1,6 +1,6 @@
 {
   "name": "local-book-reader",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Read local ebooks in Obsidian with progress, bookmarks, excerpts, and research notes.",
   "main": "main.js",
   "author": {

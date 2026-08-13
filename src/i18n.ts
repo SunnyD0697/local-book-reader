@@ -245,6 +245,7 @@ const english: Record<string, string> = {
   "此书文件当前找不到，已保留其阅读数据和笔记关联。": "This book file cannot currently be found. Its reading data and note links were kept.",
   "无法打开此书的读书笔记；原始电子书没有被修改。": "Could not open this book's reading note. The original ebook was not changed.",
   "已完成": "Completed",
+  "未记录进度": "No progress recorded",
   "已暂停": "Paused",
   "清除本书的最近阅读历史或重置本书的阅读进度": "Clear this book's recent-reading history or reset its reading progress",
   "当前 Obsidian 环境不支持系统保存位置选择。 ": "The current Obsidian environment does not support choosing a system save location.",
@@ -367,6 +368,20 @@ function translateDynamicToEnglish(source: string): string {
   if (match) return `${match[1]} matches found`;
   match = source.match(/^正在扫描：([\d,]+) \/ ([\d,]+)，新发现 ([\d,]+) 本。$/u);
   if (match) return `Scanning: ${match[1]} / ${match[2]}, ${match[3]} new books found.`;
+  match = source.match(/^图书馆刷新完成：检查 ([\d,]+) 本，新发现 ([\d,]+) 本，耗时 (.+)。$/u);
+  if (match) return `Library refresh complete: checked ${match[1]} books, found ${match[2]} new books, in ${translateDurationToEnglish(match[3])}.`;
+  match = source.match(/^已安全重新关联 ([\d,]+) 本移动或重新出现的书籍；原有进度、书签、摘录和收藏已保留。$/u);
+  if (match) return `Safely relinked ${match[1]} moved or reappeared books. Existing progress, bookmarks, excerpts, and favorites were kept.`;
+  match = source.match(/^([\d,]+) 本新发现书籍存在多个相同属性的缺失候选，未自动合并；原有数据均已保留。$/u);
+  if (match) return `${match[1]} newly discovered books have multiple missing-file candidates with matching properties. They were not merged automatically; existing data was kept.`;
+  return source;
+}
+
+function translateDurationToEnglish(source: string): string {
+  const milliseconds = source.match(/^(\d+) ms$/u);
+  if (milliseconds) return `${milliseconds[1]} ms`;
+  const seconds = source.match(/^([\d.]+) 秒$/u);
+  if (seconds) return `${seconds[1]} s`;
   return source;
 }
 

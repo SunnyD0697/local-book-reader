@@ -4,14 +4,29 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
-## 0.3.3 — community review fix
+## 0.3.4 — community review compliance candidate
+
+- Replaced manually created settings headings with Obsidian's standard
+  `Setting#setHeading()` API.
+- Replaced direct reader appearance style assignments with Obsidian's
+  supported `setCssStyles()` helper.
+- Localized the English library-refresh completion, relink, and ambiguous-match
+  notices at the point they are created.
+- Localized Personal Library reading status and progress while keeping ebook
+  format, title, author, and folder-path metadata unchanged.
+- Localized the fixed root-folder label while continuing to keep actual folder
+  paths unchanged.
+- No reader behavior, user data, supported format, or interface language
+  changed.
+
+## 0.3.3 — GitHub public preview and community review fix
 
 - Removed the redundant word `Obsidian` from the fixed community-directory
   description and added the required terminal punctuation.
 - No reader behavior, user data, supported format, or interface language
   changed.
 
-## 0.3.2 — current GitHub public preview
+## 0.3.2 — localization and three-file installer layout
 
 - Bundled the PDF.js Worker into `main.js`, removing the extra runtime file
   that the Obsidian community installer does not download.

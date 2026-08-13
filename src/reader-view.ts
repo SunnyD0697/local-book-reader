@@ -994,22 +994,26 @@ export class BookReaderView extends FileView {
           ? { background: "#f4ecd8", color: "#4b3b2a", scheme: "light" }
           : { background: "Canvas", color: "CanvasText", scheme: "light dark" };
     if (this.stage) {
-      this.stage.style.fontSize = `${settings.fontSize}%`;
-      this.stage.style.lineHeight = String(settings.lineHeight);
-      this.stage.style.paddingInline = `${settings.margin}px`;
-      this.stage.style.background = theme.background;
-      this.stage.style.color = theme.color;
-      this.stage.style.colorScheme = theme.scheme;
+      this.stage.setCssStyles({
+        fontSize: `${settings.fontSize}%`,
+        lineHeight: String(settings.lineHeight),
+        paddingInline: `${settings.margin}px`,
+        background: theme.background,
+        color: theme.color,
+        colorScheme: theme.scheme,
+      });
       const text = this.stage.querySelector<HTMLElement>(".ebook-reader__text");
       if (text) {
         // TXT is rendered in a pre element with its own default typography.
         // Make it inherit the user-selected reader appearance rather than the
         // Vault theme variables, and keep the horizontal margin in one place.
-        this.stage.style.paddingInline = "0";
-        text.style.fontSize = "inherit";
-        text.style.lineHeight = "inherit";
-        text.style.color = "inherit";
-        text.style.paddingInline = `${settings.margin}px`;
+        this.stage.setCssStyles({ paddingInline: "0" });
+        text.setCssStyles({
+          fontSize: "inherit",
+          lineHeight: "inherit",
+          color: "inherit",
+          paddingInline: `${settings.margin}px`,
+        });
       }
     }
     const renderer = this.foliateView?.renderer;
