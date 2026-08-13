@@ -28,7 +28,7 @@ const english: Record<string, string> = {
   "阅读进度、书签、高亮和摘录保存在插件数据与 Markdown 笔记中，可在设置页导出核心数据备份。": "Reading progress, bookmarks, highlights, and excerpts are stored in plugin data and Markdown notes. You can export a core-data backup in Settings.",
   "稍后探索": "Explore later",
   "打开个人图书馆": "Open Personal Library",
-  "Local Book Reader 设置": "Local Book Reader settings",
+  "插件设置": "Plugin settings",
   "界面语言": "Interface language",
   "选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choose English, Simplified Chinese, or Traditional Chinese. Reopen an open plugin page after switching to see the full update. This never changes books, notes, or existing data.",
   "馆主名称": "Library owner name",

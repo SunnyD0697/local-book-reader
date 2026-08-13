@@ -122,7 +122,7 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
     this.stopLocalization?.();
     containerEl.empty();
     new Setting(containerEl)
-      .setName("Local Book Reader 设置")
+      .setName("插件设置")
       .setHeading();
     new Setting(containerEl)
       .setName("界面语言")
