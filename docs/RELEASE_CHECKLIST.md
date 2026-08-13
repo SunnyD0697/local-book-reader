@@ -10,7 +10,8 @@ GitHub Release, or submitting to the Obsidian community directory.
 - [ ] Keep the display name **Local Book Reader** and plugin ID
   `local-book-reader`.
 - [ ] Set `manifest.json` and `package.json` to the intended release version.
-- [ ] Set `manifest.json` `minAppVersion` and `versions.json` to `1.12.7`.
+- [ ] Set `manifest.json` `minAppVersion` to `1.12.7` and add the intended
+  plugin version to `versions.json` with the same minimum version.
 - [ ] Use the exact Git tag that matches `manifest.json`, without a `v` prefix.
 - [ ] Keep `v0.2.71` labeled as a frozen local baseline, not a public release.
 
@@ -42,12 +43,13 @@ GitHub Release, or submitting to the Obsidian community directory.
   CONTRIBUTING, CODE_OF_CONDUCT, SUPPORT, INSTALLATION, and CHANGELOG.
 - [ ] State that the preview is tested on Windows with Obsidian desktop
   `1.12.7`; mark macOS and Linux as unvalidated and mobile as unsupported.
-- [ ] State that the current UI is Simplified Chinese.
+- [ ] State that the current UI supports English, Simplified Chinese, and
+  Traditional Chinese; verify all README and INSTALLATION language links.
 - [ ] Document the user-confirmed backup-export exception outside the Vault.
 - [ ] Warn that GitHub's automatic **Source code (zip)** archive is not an
   install package.
 
-## GitHub public-preview package (`0.3.0` only)
+## Historical GitHub public-preview package (`0.3.0` only)
 
 - [ ] Build `local-book-reader-0.3.0.zip` from the reviewed commit.
 - [ ] Include `main.js`, `manifest.json`, `styles.css`,
@@ -65,16 +67,21 @@ GitHub Release, or submitting to the Obsidian community directory.
 - [ ] Obtain separate user approval before merging its pull request.
 - [ ] Obtain separate user approval before changing the repository to Public.
 - [ ] After the repository is public, enable private vulnerability reporting.
-- [ ] Obtain separate user approval before creating tag `0.3.0` or publishing
-  the GitHub Release.
+- [ ] Obtain separate user approval before creating or modifying a tag, a
+  GitHub Release, or its assets.
 
-## Obsidian community-directory candidate (`0.3.1`)
+## Obsidian community-directory candidate (`0.3.2`)
 
 - [ ] Keep the released `0.3.0` GitHub public-preview ZIP unchanged; it has a
   historical four-file layout including `pdf.worker.min.mjs`.
-- [ ] Confirm that `0.3.1` bundles the PDF Worker into `main.js` and requires
+- [ ] Confirm that `0.3.2` bundles the PDF Worker into `main.js` and requires
   no fourth runtime file.
 - [ ] Create a fresh test Vault containing only `main.js`, `manifest.json`, and
   `styles.css`, then complete EPUB and PDF smoke tests before any release.
 - [ ] Before a future community submission, repeat the security review and
   recheck that the plugin name and ID remain unique.
+- [ ] Upload `main.js`, `manifest.json`, and `styles.css` as individual assets
+  to the GitHub Release whose tag matches `manifest.json`; the community
+  installer does not unpack the dedicated ZIP.
+- [ ] Obtain separate user approval before submitting the repository through
+  the Obsidian community directory.

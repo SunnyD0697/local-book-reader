@@ -4,14 +4,15 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
-## 0.3.1 — community-directory candidate
+## 0.3.2 — current GitHub public preview
 
 - Bundled the PDF.js Worker into `main.js`, removing the extra runtime file
   that the Obsidian community installer does not download.
 - Prepared the standard three-asset layout: `main.js`, `manifest.json`, and
-  `styles.css`. This version is not released or submitted to the community
-  directory yet.
-- Added a switchable English and Simplified-Chinese interface. Existing
+  `styles.css`. This version is released as a GitHub public preview but has
+  not been submitted to the community directory.
+- Added switchable English, Simplified Chinese, and Traditional Chinese
+  interfaces. Existing
   installations keep Simplified Chinese; language changes never migrate or
   rewrite ebooks, reading data, folders, or Markdown notes.
 - Added English output for newly created notes while retaining compatibility
