@@ -7,11 +7,11 @@ personal ebooks in the active Vault. It keeps ebook handling local, treats
 original ebook files as read-only input, and stores research results as normal
 Markdown.
 
-> **Release status:** `0.3.1` is the latest GitHub public-preview version.
+> **Release status:** `0.3.2` is the latest GitHub public-preview version.
 > Download the dedicated installation ZIP from the GitHub Release. It is not
 > yet available in the Obsidian community-plugin directory.
 >
-> **Community-directory status:** `0.3.1` uses the standard three-runtime-file
+> **Community-directory status:** `0.3.2` uses the standard three-runtime-file
 > layout, but it has not been submitted to the Obsidian community directory.
 
 ## What it does
@@ -53,8 +53,9 @@ Vault at a location the user selects. Read [PRIVACY.md](PRIVACY.md) and
 - Obsidian desktop `1.12.7` or newer
 - Windows desktop; this preview has not yet been validated on macOS or Linux
 - A Vault containing ebooks you are permitted to read
-- English and Simplified Chinese interfaces. Existing installations retain
-  Simplified Chinese; new installations begin in English and can switch in
+- English, Simplified Chinese, and Traditional Chinese interfaces. Existing
+  installations retain Simplified Chinese; new installations begin in English
+  and can switch in
   **Local Book Reader settings**. Switching never renames, moves, or rewrites
   existing ebooks, notes, folders, or reading data.
 

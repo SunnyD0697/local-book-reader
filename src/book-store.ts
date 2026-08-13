@@ -752,7 +752,8 @@ export class BookStore {
   }
 
   getUiLanguage(): UiLanguage {
-    return this.settings.uiLanguage === "en" ? "en" : "zh-CN";
+    if (this.settings.uiLanguage === "en" || this.settings.uiLanguage === "zh-TW") return this.settings.uiLanguage;
+    return "zh-CN";
   }
 
   async setUiLanguage(language: UiLanguage): Promise<void> {
@@ -1517,13 +1518,14 @@ export class BookStore {
   }
 
   private locale(): string {
-    return this.getUiLanguage() === "en" ? "en" : "zh-Hans-CN";
+    if (this.getUiLanguage() === "en") return "en";
+    return this.getUiLanguage() === "zh-TW" ? "zh-Hant-TW" : "zh-Hans-CN";
   }
 }
 
 export function formatBeijingTime(language: UiLanguage = "zh-CN", date = new Date()): string {
   const values = new Map(
-    new Intl.DateTimeFormat(language === "en" ? "en-CA" : "zh-CN", {
+    new Intl.DateTimeFormat(language === "en" ? "en-CA" : language === "zh-TW" ? "zh-TW" : "zh-CN", {
       timeZone: "Asia/Shanghai",
       year: "numeric",
       month: "2-digit",

@@ -2,7 +2,7 @@ import { App, FileView, Modal, TFile, WorkspaceLeaf } from "obsidian";
 import type { Bookmark, BookmarkLocator, BookMetadata, BookMetadataInput, Excerpt, ExcerptLocator, ReaderAppearanceSettings } from "./book-store";
 import LocalBookReaderPlugin from "./main";
 import { PdfSession, type PdfTextHighlight } from "./pdf-session";
-import { LocalizedNotice as Notice, localizeTree, observeLocalization } from "./i18n";
+import { LocalizedNotice as Notice, localizeTree, observeLocalization, t } from "./i18n";
 
 export const BOOK_READER_VIEW_TYPE = "local-book-reader-view";
 
@@ -127,7 +127,7 @@ class BookInfoModal extends Modal {
     for (const [label, value] of fields) {
       if (!value) continue;
       const row = contentEl.createDiv({ cls: "ebook-reader__book-info-row" });
-      row.createSpan({ cls: "ebook-reader__book-info-label", text: `${label}：` });
+      row.createSpan({ cls: "ebook-reader__book-info-label", text: `${t(label)}:` });
       row.createSpan({ text: value, attr: { "data-local-book-reader-no-localize": "true" } });
     }
     contentEl.createEl("p", {
@@ -264,39 +264,39 @@ class AppearanceModal extends Modal {
   onOpen(): void {
     this.contentEl.createEl("h2", { text: "阅读外观" });
     this.contentEl.createEl("p", { text: "此处调整只保存到当前书籍，不会影响其他书籍。" });
-    const fontLabel = this.contentEl.createEl("label", { text: `字号：${this.current.fontSize}%` });
+    const fontLabel = this.contentEl.createEl("label", { text: `${t("字号")}: ${this.current.fontSize}%` });
     const fontSize = this.contentEl.createEl("input", { attr: { type: "range", min: "75", max: "180", step: "5" } });
     fontSize.value = String(this.current.fontSize);
-    fontSize.oninput = () => fontLabel.setText(`字号：${fontSize.value}%`);
+    fontSize.oninput = () => fontLabel.setText(`${t("字号")}: ${fontSize.value}%`);
 
-    const lineLabel = this.contentEl.createEl("label", { text: `行距：${this.current.lineHeight}` });
+    const lineLabel = this.contentEl.createEl("label", { text: `${t("行距")}: ${this.current.lineHeight}` });
     const lineHeight = this.contentEl.createEl("input", { attr: { type: "range", min: "1.1", max: "2.4", step: "0.1" } });
     lineHeight.value = String(this.current.lineHeight);
-    lineHeight.oninput = () => lineLabel.setText(`行距：${lineHeight.value}`);
+    lineHeight.oninput = () => lineLabel.setText(`${t("行距")}: ${lineHeight.value}`);
 
-    const marginLabel = this.contentEl.createEl("label", { text: `页边距：${this.current.margin}px` });
+    const marginLabel = this.contentEl.createEl("label", { text: `${t("页边距")}: ${this.current.margin}px` });
     const margin = this.contentEl.createEl("input", { attr: { type: "range", min: "8", max: "80", step: "4" } });
     margin.value = String(this.current.margin);
-    margin.oninput = () => marginLabel.setText(`页边距：${margin.value}px`);
+    margin.oninput = () => marginLabel.setText(`${t("页边距")}: ${margin.value}px`);
 
-    this.contentEl.createEl("label", { text: "主题" });
+    this.contentEl.createEl("label", { text: t("主题") });
     const theme = this.contentEl.createEl("select");
     for (const [value, label] of [["system", "跟随 Obsidian"], ["light", "浅色"], ["dark", "深色"], ["sepia", "护眼"]] as const) {
-      theme.createEl("option", { text: label, value });
+      theme.createEl("option", { text: t(label), value });
     }
     theme.value = this.current.theme;
 
-    this.contentEl.createEl("label", { text: "阅读方式" });
+    this.contentEl.createEl("label", { text: t("阅读方式") });
     const flow = this.contentEl.createEl("select");
-    flow.createEl("option", { text: "分页", value: "paginated" });
-    flow.createEl("option", { text: "连续滚动", value: "scrolled" });
+    flow.createEl("option", { text: t("分页"), value: "paginated" });
+    flow.createEl("option", { text: t("连续滚动"), value: "scrolled" });
     flow.value = this.current.flow;
 
     const actions = this.contentEl.createDiv({ cls: "ebook-reader__bookmark-modal-actions" });
-    const cancel = actions.createEl("button", { text: "取消" });
+    const cancel = actions.createEl("button", { text: t("取消") });
     cancel.type = "button";
     cancel.onclick = () => this.close();
-    const save = actions.createEl("button", { text: "应用" });
+    const save = actions.createEl("button", { text: t("应用") });
     save.type = "button";
     save.onclick = () => {
       save.disabled = true;
@@ -522,6 +522,7 @@ export class BookReaderView extends FileView {
       this.registerDomEvent(zoomIn, "click", () => void this.setPdfScale(this.currentPdfScale * 1.2));
       this.registerDomEvent(fit, "click", () => void this.setPdfFitWidth());
     }
+    localizeTree(toolbar);
     this.bookmarkPanel = this.contentEl.createDiv({ cls: "ebook-reader__bookmarks" });
     this.tocPanel = this.contentEl.createDiv({ cls: "ebook-reader__toc" });
     this.excerptPanel = this.contentEl.createDiv({ cls: "ebook-reader__excerpts" });
@@ -575,6 +576,7 @@ export class BookReaderView extends FileView {
       cls: "ebook-reader__empty",
       text: "请通过命令、侧边栏按钮或文件菜单打开电子书。"
     });
+    localizeTree(this.contentEl);
   }
 
   private async openReflowableBook(file: TFile): Promise<void> {
@@ -1341,9 +1343,9 @@ export class BookReaderView extends FileView {
     this.tocPanel.empty();
     this.tocPanel.toggleClass("is-hidden", !this.showingToc);
     if (!this.showingToc) return;
-    this.tocPanel.createEl("h3", { text: "目录" });
+    this.tocPanel.createEl("h3", { text: t("目录") });
     if (this.toc.length === 0) {
-      this.tocPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: "当前书籍没有可用目录。" });
+      this.tocPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: t("当前书籍没有可用目录。") });
       return;
     }
     this.renderTocItems(this.tocPanel, this.toc, 0);
@@ -1351,7 +1353,7 @@ export class BookReaderView extends FileView {
 
   private renderTocItems(container: HTMLElement, items: TocItem[], depth: number): void {
     for (const item of items) {
-      const button = container.createEl("button", { cls: "ebook-reader__toc-item", text: item.label });
+      const button = container.createEl("button", { cls: "ebook-reader__toc-item", text: item.label, attr: { "data-local-book-reader-no-localize": "true" } });
       button.type = "button";
       button.style.paddingInlineStart = `${0.5 + depth * 1}rem`;
       button.onclick = () => void this.goToTocItem(item);
@@ -1385,9 +1387,9 @@ export class BookReaderView extends FileView {
     if (!this.showingBookmarks || !this.currentFile) return;
 
     const list = this.plugin.getBookmarks(this.currentFile.path);
-    this.bookmarkPanel.createEl("h3", { text: "书签" });
+    this.bookmarkPanel.createEl("h3", { text: t("书签") });
     if (list.length === 0) {
-      this.bookmarkPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: "本书还没有书签。" });
+      this.bookmarkPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: t("本书还没有书签。") });
       return;
     }
     for (const bookmark of list) this.renderBookmarkItem(bookmark);
@@ -1396,12 +1398,12 @@ export class BookReaderView extends FileView {
   private renderBookmarkItem(bookmark: Bookmark): void {
     if (!this.bookmarkPanel || !this.currentFile) return;
     const row = this.bookmarkPanel.createDiv({ cls: "ebook-reader__bookmark-row" });
-    row.createDiv({ cls: "ebook-reader__bookmark-label", text: bookmark.label || "未命名书签", attr: bookmark.label ? { "data-local-book-reader-no-localize": "true" } : undefined });
+    row.createDiv({ cls: "ebook-reader__bookmark-label", text: bookmark.label || t("未命名书签"), attr: bookmark.label ? { "data-local-book-reader-no-localize": "true" } : undefined });
     row.createDiv({ cls: "ebook-reader__bookmark-time", text: bookmark.createdAt });
-    const jump = row.createEl("button", { text: "跳转" });
+    const jump = row.createEl("button", { text: t("跳转") });
     jump.type = "button";
     jump.onclick = () => void this.goToBookmark(bookmark);
-    const remove = row.createEl("button", { text: "删除" });
+    const remove = row.createEl("button", { text: t("删除") });
     remove.type = "button";
     remove.onclick = () => {
       if (!this.currentFile) return;
@@ -1436,13 +1438,13 @@ export class BookReaderView extends FileView {
     if (!this.showingExcerpts || !this.currentFile) return;
 
     const excerpts = this.plugin.getExcerpts(this.currentFile.path);
-    this.excerptPanel.createEl("h3", { text: "摘录" });
+    this.excerptPanel.createEl("h3", { text: t("摘录") });
     this.excerptPanel.createDiv({
       cls: "ebook-reader__excerpt-help",
-      text: "删除会移除本阅读器中的高亮和定位数据；已经写入的 Markdown 读书笔记会保留。"
+      text: t("删除会移除本阅读器中的高亮和定位数据；已经写入的 Markdown 读书笔记会保留。")
     });
     if (excerpts.length === 0) {
-      this.excerptPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: "本书还没有摘录。" });
+      this.excerptPanel.createDiv({ cls: "ebook-reader__bookmark-empty", text: t("本书还没有摘录。") });
       return;
     }
     for (const excerpt of excerpts) this.renderExcerptItem(excerpt);
@@ -1453,10 +1455,10 @@ export class BookReaderView extends FileView {
     const row = this.excerptPanel.createDiv({ cls: "ebook-reader__excerpt-row" });
     row.createDiv({ cls: "ebook-reader__excerpt-text", text: this.compactSearchExcerpt(excerpt.text) });
     row.createDiv({ cls: "ebook-reader__bookmark-time", text: excerpt.createdAt });
-    const jump = row.createEl("button", { text: "跳转" });
+    const jump = row.createEl("button", { text: t("跳转") });
     jump.type = "button";
     jump.onclick = () => void this.goToExcerpt(excerpt);
-    const remove = row.createEl("button", { text: "删除高亮" });
+    const remove = row.createEl("button", { text: t("删除高亮") });
     remove.type = "button";
     remove.onclick = () => void this.removeExcerpt(excerpt);
   }

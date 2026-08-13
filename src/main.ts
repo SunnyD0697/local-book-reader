@@ -87,12 +87,13 @@ class FirstUseGuideModal extends Modal {
     });
     new Setting(contentEl)
       .setName("界面语言")
-      .setDesc("选择 English 或简体中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
+      .setDesc("选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
       .addDropdown((dropdown) => dropdown
         .addOption("en", "English")
         .addOption("zh-CN", "简体中文")
+        .addOption("zh-TW", "繁體中文")
         .setValue(this.plugin.getUiLanguage())
-        .onChange((value) => void this.plugin.setUiLanguage(value === "en" ? "en" : "zh-CN").then(() => this.onOpen())));
+        .onChange((value) => void this.plugin.setUiLanguage(value === "en" || value === "zh-TW" ? value : "zh-CN").then(() => this.onOpen())));
     const controls = new Setting(contentEl);
     controls.addButton((button) => button.setButtonText("稍后探索").onClick(() => this.close()));
     controls.addButton((button) => button.setButtonText("打开个人图书馆").setCta().onClick(() => {
@@ -123,12 +124,13 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
     containerEl.createEl("h2", { text: "Local Book Reader 设置" });
     new Setting(containerEl)
       .setName("界面语言")
-      .setDesc("选择 English 或简体中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
+      .setDesc("选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。")
       .addDropdown((dropdown) => dropdown
         .addOption("en", "English")
         .addOption("zh-CN", "简体中文")
+        .addOption("zh-TW", "繁體中文")
         .setValue(this.plugin.getUiLanguage())
-        .onChange((value) => void this.plugin.setUiLanguage(value === "en" ? "en" : "zh-CN").then(() => this.display())));
+        .onChange((value) => void this.plugin.setUiLanguage(value === "en" || value === "zh-TW" ? value : "zh-CN").then(() => this.display())));
     let libraryOwnerName = this.plugin.getLibraryOwnerName();
     new Setting(containerEl)
       .setName("馆主名称")
@@ -247,7 +249,7 @@ class LocalBookReaderSettingsTab extends PluginSettingTab {
     const cacheUsage = containerEl.createDiv({ cls: "ebook-settings__cache-usage", text: "正在读取缓存占用…" });
     const refreshCacheUsage = () => {
       void this.plugin.getDataStorageUsage().then((usage) => {
-        cacheUsage.setText(`核心阅读数据：${formatBytes(usage.coreBytes)}；可清理缓存：${formatBytes(usage.cacheBytes)} / ${formatBytes(usage.cacheLimitBytes)}（${usage.cacheFileCount} 个文件）`);
+        cacheUsage.setText(t(`核心阅读数据：${formatBytes(usage.coreBytes)}；可清理缓存：${formatBytes(usage.cacheBytes)} / ${formatBytes(usage.cacheLimitBytes)}（${usage.cacheFileCount} 个文件）`));
       }).catch((error) => {
         console.error("Local Book Reader could not read cache usage", error);
         cacheUsage.setText("无法读取缓存占用；现有阅读数据未受影响。 ");
