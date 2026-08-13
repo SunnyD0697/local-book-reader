@@ -1,7 +1,7 @@
 {
   "id": "local-book-reader",
   "name": "Local Book Reader",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "minAppVersion": "1.12.7",
   "description": "Read local ebooks with progress, bookmarks, excerpts, and research notes. 支持进度、书签、摘录与研究笔记.",
   "author": "Sunny D",

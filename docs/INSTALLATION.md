@@ -16,7 +16,7 @@
 
 1. Open the repository's
    [Releases page](https://github.com/SunnyD0697/local-book-reader/releases).
-2. Download `local-book-reader-0.3.3.zip`. Do **not** download GitHub's
+2. Download `local-book-reader-0.3.5.zip`. Do **not** download GitHub's
    automatic **Source code (zip)** archive; it is source code, not an install
    package.
 3. Close Obsidian, or disable Local Book Reader while replacing its files.
@@ -36,14 +36,14 @@ Use the accompanying `SHA256SUMS.txt` release attachment if you want to verify
 the downloaded ZIP before extracting it.
 
 Local Book Reader is not yet available in the Obsidian community-plugin
-directory. Version `0.3.2` has the standard runtime layout, but community
+directory. Version `0.3.5` has the standard runtime layout, but community
 directory submission remains a separate future decision.
 
 ## Build and install from source
 
 1. Install Node.js `22.13.0` or newer and pnpm `11.9.0`.
 2. Run `pnpm install --frozen-lockfile` and `pnpm run build` in the repository.
-3. Follow steps 3–6 above. The current public `0.3.2` ZIP and source build use
+3. Follow steps 3–6 above. The current public `0.3.5` ZIP and source build use
    the standard three runtime files: `main.js`, `manifest.json`, and
    `styles.css`.
 

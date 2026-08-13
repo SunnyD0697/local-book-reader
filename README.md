@@ -7,13 +7,13 @@ personal ebooks in the active Vault. It keeps ebook handling local, treats
 original ebook files as read-only input, and stores research results as normal
 Markdown.
 
-> **Release status:** `0.3.3` is the latest GitHub public-preview version.
+> **Release status:** `0.3.5` is the latest GitHub public-release version.
 > Download the dedicated installation ZIP from the GitHub Release. It is not
 > yet available in the Obsidian community-plugin directory.
 >
-> **Community-directory status:** `0.3.4` is an unreleased compliance candidate
-> for the community directory. It changes only source implementation details
-> required by the automated review; it is not available to install yet.
+> **Community-directory status:** `0.3.5` is the current compliance candidate
+> under automated review. It is not yet available in the community-plugin
+> directory.
 
 ## What it does
 

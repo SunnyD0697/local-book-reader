@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.3.5 — community review heading fix
+
+- Removed the plugin name from the settings heading, as required by the
+  Obsidian Community automated review.
+- No reader behavior, user data, supported format, or interface language
+  changed.
+
 ## 0.3.4 — community review compliance candidate
 
 - Replaced manually created settings headings with Obsidian's standard
