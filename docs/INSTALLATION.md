@@ -16,7 +16,7 @@
 
 1. Open the repository's
    [Releases page](https://github.com/SunnyD0697/local-book-reader/releases).
-2. Download `local-book-reader-0.3.2.zip`. Do **not** download GitHub's
+2. Download `local-book-reader-0.3.3.zip`. Do **not** download GitHub's
    automatic **Source code (zip)** archive; it is source code, not an install
    package.
 3. Close Obsidian, or disable Local Book Reader while replacing its files.
