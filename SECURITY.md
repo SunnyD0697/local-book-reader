@@ -2,16 +2,20 @@
 
 ## Supported versions
 
-Security reports are accepted for the latest released version only. This source
-tree is a public-release candidate, not a published release.
+Security reports are accepted for the latest GitHub release only. The `0.3.x`
+line is a public preview and receives security fixes on a best-effort basis.
 
 ## Reporting a vulnerability
 
-Do not publish exploits, proof-of-concept files, or sensitive details in a
-public issue. Before GitHub private vulnerability reporting is enabled for the
-repository, email a concise report to `sunny1943021@gmail.com`. Include the
-plugin version, Obsidian version, steps to reproduce, impact, and a safe
-redacted sample when possible.
+Do not publish exploits, proof-of-concept files, private ebooks, or sensitive
+details in a public issue. If the repository's **Report a vulnerability**
+button is available, use GitHub private vulnerability reporting. Otherwise,
+email a concise report to `sunny1943021@gmail.com`.
+
+Include the plugin version, Obsidian version, operating system, steps to
+reproduce, impact, and a safe redacted sample when possible. Never send a
+private ebook or unredacted Vault data unless the maintainer explicitly asks
+for a minimal sample through a private channel.
 
 ## Security boundaries
 

@@ -1,9 +1,9 @@
 {
   "id": "local-book-reader",
   "name": "Local Book Reader",
-  "version": "0.2.71",
-  "minAppVersion": "1.8.0",
-  "description": "A local-first ebook reader and research foundation for Obsidian.",
+  "version": "0.3.0",
+  "minAppVersion": "1.12.7",
+  "description": "Read local ebooks in Obsidian with progress, bookmarks, excerpts, and research notes.",
   "author": "Sunny D",
   "authorUrl": "https://github.com/SunnyD0697",
   "isDesktopOnly": true
