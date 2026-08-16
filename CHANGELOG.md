@@ -2,7 +2,26 @@
 
 All notable changes to this project are documented here.
 
-## Unreleased
+## 0.3.6 — French interface and localization hardening
+
+- Added Français as a fourth switchable interface language. Every plugin-owned
+  UI string is now available in English, Simplified Chinese, Traditional
+  Chinese, and French; new installations still begin in English.
+- Newly created reading notes, thoughts, excerpts, and research notes now use
+  French metadata labels when the interface is French, and the note search
+  parser understands English, Simplified Chinese, and French labels.
+- Fixed remaining English gaps so dynamic notices, confirmation dialogs,
+  live reader status (progress, PDF page, zoom), search status, library scan
+  progress, backup summaries, and error details no longer fall back to
+  Chinese in the English interface.
+- Fixed a Traditional-Chinese edge case where non-plugin strings such as book
+  paths and titles could be character-converted by the interface translator.
+- Added repeatable automated i18n regression tests covering dynamic notices,
+  library status and progress, and the reverse assertion that book names and
+  paths are never translated. Tests run with Node's built-in test runner and
+  are part of CI. A static guard fails the suite if any `setText` call with
+  Chinese UI text bypasses the translator.
+- No reader behavior, user data, or supported format changed.
 
 ## 0.3.5 — community review heading fix
 

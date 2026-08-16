@@ -1,6 +1,6 @@
 {
   "name": "local-book-reader",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Read local ebooks in Obsidian with progress, bookmarks, excerpts, and research notes.",
   "main": "main.js",
   "author": {
@@ -21,7 +21,8 @@
   "homepage": "https://github.com/SunnyD0697/local-book-reader#readme",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production"
+    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
+    "test": "node esbuild.tests.config.mjs && node --test tests/dist/i18n.test.mjs"
   },
   "keywords": [
     "obsidian",

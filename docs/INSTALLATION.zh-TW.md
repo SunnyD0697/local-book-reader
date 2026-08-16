@@ -1,6 +1,6 @@
 # 安裝、升級與解除安裝
 
-[English](INSTALLATION.md) | [简体中文](INSTALLATION.zh-CN.md) | [繁體中文](INSTALLATION.zh-TW.md)
+[English](INSTALLATION.md) | [简体中文](INSTALLATION.zh-CN.md) | [繁體中文](INSTALLATION.zh-TW.md) | [Français](INSTALLATION.fr.md)
 
 ## 開始前
 
@@ -13,24 +13,24 @@
 ## 安裝 GitHub 公開預覽版
 
 1. 開啟儲存庫的 [Releases 頁面](https://github.com/SunnyD0697/local-book-reader/releases)。
-2. 下載 `local-book-reader-0.3.5.zip`。**不要**下載 GitHub 自動產生的 **Source code (zip)**；它是原始碼，不是安裝套件。
+2. 下載 `local-book-reader-0.3.6.zip`。**不要**下載 GitHub 自動產生的 **Source code (zip)**；它是原始碼，不是安裝套件。
 3. 關閉 Obsidian，或在替換檔案前先停用 Local Book Reader。
 4. 建立資料夾：`<Vault>/.obsidian/plugins/local-book-reader/`。
 5. 將專用外掛 ZIP 的內容解壓縮至該資料夾。確認以下三個執行檔直接位於 `local-book-reader` 資料夾中：
    - `main.js`
    - `manifest.json`
    - `styles.css`
-6. 重新開啟 Obsidian，並在「社群外掛」中啟用 **Local Book Reader**。新安裝預設顯示 English；可隨時在 **Local Book Reader settings** 的「Interface language」切換 English、簡體中文與繁體中文。切換不會改變電子書、筆記、資料夾或閱讀資料。
+6. 重新開啟 Obsidian，並在「社群外掛」中啟用 **Local Book Reader**。新安裝預設顯示 English；可隨時在 **Local Book Reader settings** 的「Interface language」切換 English、簡體中文、繁體中文與法語。切換不會改變電子書、筆記、資料夾或閱讀資料。
 
 如需在解壓縮前驗證下載的 ZIP，請使用同一 Release 附帶的 `SHA256SUMS.txt`。
 
-Local Book Reader 尚未進入 Obsidian 社群外掛目錄。`0.3.5` 已採用標準執行檔配置，社群目錄發布仍在進行自動審查。
+Local Book Reader 也已進入 Obsidian 社群外掛目錄。兩種安裝途徑使用相同的三個執行檔。
 
 ## 從原始碼建置並安裝
 
 1. 安裝 Node.js `22.13.0` 或更新版本，以及 pnpm `11.9.0`。
 2. 在儲存庫目錄中執行 `pnpm install --frozen-lockfile` 與 `pnpm run build`。
-3. 依上文第 3–6 步操作。目前公開的 `0.3.5` ZIP 與從原始碼建置的版本都使用標準的三個執行檔：`main.js`、`manifest.json` 與 `styles.css`。
+3. 依上文第 3–6 步操作。目前公開的 `0.3.6` ZIP 與從原始碼建置的版本都使用標準的三個執行檔：`main.js`、`manifest.json` 與 `styles.css`。
 
 首次使用說明會顯示在 Obsidian 中。為避免大型收藏導致啟動卡頓，外掛會將電子書副檔名的處理權交由 Obsidian 管理。
 

@@ -228,9 +228,9 @@ function defaultSettings(language: UiLanguage = "zh-CN"): PluginSettings {
   return {
     schemaVersion: SCHEMA_VERSION,
     libraryOwnerName: "",
-    notesDirectory: language === "en" ? "zz_Reading & Research/Reading Notes" : "zz_阅读与研究/阅读笔记",
+    notesDirectory: language === "en" ? "zz_Reading & Research/Reading Notes" : language === "fr" ? "zz_Lecture et recherche/Notes de lecture" : "zz_阅读与研究/阅读笔记",
     noteTemplate: defaultNoteTemplate(language),
-    researchDirectory: language === "en" ? "zz_Reading & Research/Research Notes" : "zz_阅读与研究/主题研究",
+    researchDirectory: language === "en" ? "zz_Reading & Research/Research Notes" : language === "fr" ? "zz_Lecture et recherche/Notes de recherche" : "zz_阅读与研究/主题研究",
     readerAppearance: defaultReaderAppearance(),
     readerAppearanceScopeVersion: 1,
     readerOpenMode: "tab",
@@ -752,7 +752,7 @@ export class BookStore {
   }
 
   getUiLanguage(): UiLanguage {
-    if (this.settings.uiLanguage === "en" || this.settings.uiLanguage === "zh-TW") return this.settings.uiLanguage;
+    if (this.settings.uiLanguage === "en" || this.settings.uiLanguage === "zh-TW" || this.settings.uiLanguage === "fr") return this.settings.uiLanguage;
     return "zh-CN";
   }
 
@@ -1519,13 +1519,14 @@ export class BookStore {
 
   private locale(): string {
     if (this.getUiLanguage() === "en") return "en";
+    if (this.getUiLanguage() === "fr") return "fr";
     return this.getUiLanguage() === "zh-TW" ? "zh-Hant-TW" : "zh-Hans-CN";
   }
 }
 
 export function formatBeijingTime(language: UiLanguage = "zh-CN", date = new Date()): string {
   const values = new Map(
-    new Intl.DateTimeFormat(language === "en" ? "en-CA" : language === "zh-TW" ? "zh-TW" : "zh-CN", {
+    new Intl.DateTimeFormat(language === "en" ? "en-CA" : language === "fr" ? "fr-FR" : language === "zh-TW" ? "zh-TW" : "zh-CN", {
       timeZone: "Asia/Shanghai",
       year: "numeric",
       month: "2-digit",

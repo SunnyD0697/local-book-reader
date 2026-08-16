@@ -13,6 +13,8 @@ data.json
 .codex/
 diagnostics/
 coverage/
+tests/dist/
+release-staging/
 
 # Never commit credentials, private keys, or machine-specific secrets.
 .env

@@ -122,7 +122,7 @@ class BookInfoModal extends Modal {
       ["语言", this.metadata?.languages?.join("、")],
       ["标识符", this.metadata?.identifier],
       ["格式", this.file.extension.toUpperCase()],
-      ["分类", this.file.parent?.path || "Vault 根目录"]
+      ["分类", this.file.parent?.path || "根目录"]
     ];
     for (const [label, value] of fields) {
       if (!value) continue;
@@ -341,7 +341,7 @@ class SearchModal extends Modal {
       if (!query) return;
       const generation = ++this.generation;
       results.empty();
-      status.setText("正在搜索…");
+      status.setText(t("正在搜索…"));
       input.disabled = true;
       let count = 0;
       void this.search(query, (result) => {
@@ -359,15 +359,15 @@ class SearchModal extends Modal {
             new Notice("无法跳转到该搜索结果。");
           });
         };
-        status.setText(`已找到 ${count} 处`);
+        status.setText(t(`已找到 ${count} 处`));
       }).then((total) => {
         if (generation !== this.generation) return;
-        status.setText(total ? `找到 ${total} 处` : "没有找到匹配文字。");
+        status.setText(total ? t(`找到 ${total} 处`) : t("没有找到匹配文字。"));
         input.disabled = false;
       }).catch((error) => {
         console.error("Local Book Reader search failed", error);
         if (generation === this.generation) {
-          status.setText("搜索失败；原始电子书没有被修改。");
+          status.setText(t("搜索失败；原始电子书没有被修改。"));
           input.disabled = false;
         }
       });
@@ -695,11 +695,11 @@ export class BookReaderView extends FileView {
   private renderOpenError(file: TFile, error: unknown): void {
     this.contentEl.empty();
     const message = error instanceof Error ? error.message : String(error);
-    this.contentEl.createEl("h2", { text: "无法打开电子书" });
+    this.contentEl.createEl("h2", { text: t("无法打开电子书") });
     this.contentEl.createEl("p", { text: file.basename });
     this.contentEl.createEl("pre", {
       cls: "ebook-reader__error",
-      text: message.slice(0, 1000)
+      text: t(message.slice(0, 1000))
     });
   }
 
@@ -811,7 +811,7 @@ export class BookReaderView extends FileView {
     }
     if (this.pdfPageStatus) {
       const zoom = this.pdfFitWidth ? "适宽" : `${Math.round(this.currentPdfScale * 100)}%`;
-      this.pdfPageStatus.setText(`/ ${this.pdfSession.pageCount} · ${zoom}`);
+      this.pdfPageStatus.setText(t(`/ ${this.pdfSession.pageCount} · ${zoom}`));
     }
   }
 
@@ -821,12 +821,12 @@ export class BookReaderView extends FileView {
     const extension = file.extension.toLowerCase();
     if (extension === "pdf" && this.pdfSession) {
       const percentage = Math.round((this.currentPdfPage / this.pdfSession.pageCount) * 100);
-      this.readingStatusEl.setText(`第 ${this.currentPdfPage} / ${this.pdfSession.pageCount} 页 · ${percentage}%`);
+      this.readingStatusEl.setText(t(`第 ${this.currentPdfPage} / ${this.pdfSession.pageCount} 页 · ${percentage}%`));
       return;
     }
     const progress = extension === "txt" ? this.currentTextProgress : this.currentReflowProgress;
     const label = extension === "txt" ? "" : this.currentChapter ? `${this.currentChapter} · ` : "";
-    this.readingStatusEl.setText(`${label}进度 ${Math.round(progress * 100)}%`);
+    this.readingStatusEl.setText(t(`${label}进度 ${Math.round(progress * 100)}%`));
   }
 
   private async previous(): Promise<void> {

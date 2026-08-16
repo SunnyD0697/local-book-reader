@@ -1,12 +1,12 @@
 # Local Book Reader
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当前库（Vault）中阅读和整理个人电子书。它在本地处理电子书，将原始电子书作为只读内容，并把研究成果保存为普通 Markdown 文件。
 
-> **发布状态：** `0.3.5` 是最新的 GitHub 公开发布版本。专用安装 ZIP 可从 GitHub Release 下载，暂未进入 Obsidian 社区插件目录。
+> **发布状态：** `0.3.6` 是最新的 GitHub 公开发布版本。专用安装 ZIP 可从 GitHub Release 下载。
 >
-> **社区目录状态：** `0.3.5` 是正在接受自动审查的社区目录合规候选版本，暂未进入社区插件目录。
+> **社区目录状态：** Local Book Reader 已可在 Obsidian 社区插件目录中找到。
 
 ## 可以做什么
 
@@ -35,7 +35,7 @@ Local Book Reader 是一款仅支持桌面端的 Obsidian 插件，用于在当�
 - Obsidian 桌面版 `1.12.7` 或更高版本
 - Windows 桌面端；本预览版尚未在 macOS 或 Linux 上验证
 - 一个存有你有权阅读的电子书的 Vault
-- 提供英文、简体中文和繁體中文界面。已有安装会继续保持简体中文；新安装默认英文，可在 **Local Book Reader 设置** 中切换。切换不会重命名、移动或改写已有电子书、笔记、目录或阅读数据。
+- 提供英文、简体中文、繁體中文和法语界面。已有安装会继续保持简体中文；新安装默认英文，可在 **Local Book Reader 设置** 中切换。切换不会重命名、移动或改写已有电子书、笔记、目录或阅读数据。
 
 不支持手机或平板设备。
 
@@ -58,7 +58,7 @@ pnpm run build
 
 ## 已知边界
 
-- 这是 GitHub 公开预览版，不是 Obsidian 社区插件目录的正式发布。
+- 通过 Obsidian 社区插件目录与 GitHub Release 分发。
 - 扫描版 PDF 不提供 OCR 文字识别。
 - 不提供云同步、电子书转换、在线元数据、AI 功能、文字转语音或全书库全文索引。
 - 不提供电子书的自动整理、重命名、移动、合并或删除。
