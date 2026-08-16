@@ -1,19 +1,17 @@
 # Local Book Reader
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 Local Book Reader is a desktop-only Obsidian plugin for reading and organizing
 personal ebooks in the active Vault. It keeps ebook handling local, treats
 original ebook files as read-only input, and stores research results as normal
 Markdown.
 
-> **Release status:** `0.3.5` is the latest GitHub public-release version.
-> Download the dedicated installation ZIP from the GitHub Release. It is not
-> yet available in the Obsidian community-plugin directory.
+> **Release status:** `0.3.6` is the latest GitHub public-release version.
+> Download the dedicated installation ZIP from the GitHub Release.
 >
-> **Community-directory status:** `0.3.5` is the current compliance candidate
-> under automated review. It is not yet available in the community-plugin
-> directory.
+> **Community-directory status:** Local Book Reader is available in the
+> Obsidian community-plugin directory.
 
 ## What it does
 
@@ -54,9 +52,9 @@ Vault at a location the user selects. Read [PRIVACY.md](PRIVACY.md) and
 - Obsidian desktop `1.12.7` or newer
 - Windows desktop; this preview has not yet been validated on macOS or Linux
 - A Vault containing ebooks you are permitted to read
-- English, Simplified Chinese, and Traditional Chinese interfaces. Existing
-  installations retain Simplified Chinese; new installations begin in English
-  and can switch in
+- English, Simplified Chinese, Traditional Chinese, and French interfaces.
+  Existing installations retain Simplified Chinese; new installations begin
+  in English and can switch in
   **Local Book Reader settings**. Switching never renames, moves, or rewrites
   existing ebooks, notes, folders, or reading data.
 
@@ -87,7 +85,8 @@ generated runtime artifacts; they belong in GitHub Release attachments.
 
 ## Known boundaries
 
-- This is a GitHub public preview, not an Obsidian community-directory release.
+- Distributed through the Obsidian community-plugin directory and GitHub
+  Releases.
 - Scanned-image PDFs do not provide OCR.
 - The project does not provide cloud sync, ebook conversion, online metadata,
   AI features, text-to-speech, or full-library content indexing.

@@ -1,6 +1,6 @@
 import { Notice as ObsidianNotice } from "obsidian";
 
-export type UiLanguage = "zh-CN" | "zh-TW" | "en";
+export type UiLanguage = "zh-CN" | "zh-TW" | "en" | "fr";
 
 let activeLanguage: UiLanguage = "zh-CN";
 
@@ -30,7 +30,7 @@ const english: Record<string, string> = {
   "打开个人图书馆": "Open Personal Library",
   "插件设置": "Plugin settings",
   "界面语言": "Interface language",
-  "选择 English、简体中文或繁體中文。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choose English, Simplified Chinese, or Traditional Chinese. Reopen an open plugin page after switching to see the full update. This never changes books, notes, or existing data.",
+  "选择 English、简体中文、繁體中文或 Français。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choose English, Simplified Chinese, Traditional Chinese, or Français. Reopen an open plugin page after switching to see the full update. This never changes books, notes, or existing data.",
   "馆主名称": "Library owner name",
   "填写后显示为“名称 的个人图书馆”；留空则显示“个人图书馆”。名称只保存在插件设置中，不会改动电子书或索引。": "When set, the library is shown as “Name's Personal Library”; otherwise it is “Personal Library”. The name stays in plugin settings and never changes books or the index.",
   "例如：Sunny D": "For example: Sunny D",
@@ -301,6 +301,318 @@ const english: Record<string, string> = {
   "删除会移除本阅读器中的高亮和定位数据；已经写入的 Markdown 读书笔记会保留。": "Deleting removes this reader's highlight and location data. Markdown reading notes already written are kept.",
   "无法读取想法或主题研究笔记；已有摘录检索不受影响。 ": "Could not read thoughts or research notes; existing excerpt search is unaffected.",
   "主题研究笔记名称": "Research note name",
+  "繁體中文": "Traditional Chinese",
+  "这项操作只会清除最近打开时间。进度、书签、高亮、摘录、想法、收藏、Markdown 笔记和原始电子书都会保留。": "This clears only the last-opened time. Progress, bookmarks, highlights, excerpts, thoughts, favorites, Markdown notes, and original ebooks are all kept.",
+  "这项操作只会清除上次阅读位置。书签、高亮、摘录、想法、阅读状态、收藏、Markdown 笔记和原始电子书都会保留。": "This clears only the last reading position. Bookmarks, highlights, excerpts, thoughts, reading status, favorites, Markdown notes, and original ebooks are all kept.",
+  "将导出插件设置、图书索引、进度、书签、状态、收藏和本地摘录/高亮定位数据。不会导出或修改电子书、Markdown 笔记、封面和缓存。下一步将由你选择新的保存位置。": "Exports plugin settings, library index, progress, bookmarks, status, favorites, and local excerpt/highlight locations. Ebooks, Markdown notes, covers, and cache are not exported or changed. You will choose a new save location next.",
+  "只会删除插件专属 cache 目录中的可重建文件。进度、书签、高亮、摘录、想法、状态、收藏、自动备份、Markdown 笔记和原始电子书都会保留。": "Deletes only rebuildable files in this plugin's cache folder. Progress, bookmarks, highlights, excerpts, thoughts, status, favorites, automatic backups, Markdown notes, and original ebooks are all kept.",
+  "将恢复默认的馆主名称、读书笔记目录、主题研究目录、新笔记模板和新书默认阅读外观。已为单本书保存的外观不会改变；已有 Markdown 文件、进度、书签、高亮、摘录、想法、收藏、自动备份、缓存和电子书均不会被移动、删除或修改。": "Restores the default library owner name, note folders, new-note template, and default appearance for new books. Per-book appearance is kept. Existing Markdown files, progress, bookmarks, highlights, excerpts, thoughts, favorites, automatic backups, cache, and ebooks are never moved, deleted, or changed.",
+};
+
+// French keeps the same Chinese source keys so one t() call serves every
+// language. The "vous" form is used for user-facing text.
+const french: Record<string, string> = {
+  "取消": "Annuler",
+  "关闭": "Fermer",
+  "打开": "Ouvrir",
+  "删除": "Supprimer",
+  "跳转": "Aller à",
+  "添加": "Ajouter",
+  "应用": "Appliquer",
+  "保存": "Enregistrer",
+  "搜索": "Rechercher",
+  "暂停": "Suspendre",
+  "继续扫描": "Reprendre l'analyse",
+  "刷新图书馆": "Actualiser la bibliothèque",
+  "个人图书馆": "Bibliothèque personnelle",
+  "欢迎使用 Local Book Reader": "Bienvenue dans Local Book Reader",
+  "这里直接读取 Vault 内的电子书；不会复制、移动、重命名或修改原始书籍。": "Ce plugin lit directement les livres électroniques de votre coffre (Vault). Il ne copie, ne déplace, ne renomme et ne modifie jamais les livres d'origine.",
+  "打开“个人图书馆”，首次使用时点击“刷新图书馆”建立索引。": "Ouvrez Bibliothèque personnelle, puis sélectionnez Actualiser la bibliothèque la première fois pour créer l'index.",
+  "索引只读取文件路径和基础属性，不读取整本正文；之后新增书籍会自动发现。": "L'index ne lit que les chemins de fichiers et les propriétés de base, pas le contenu des livres. Les livres ajoutés ensuite sont détectés automatiquement.",
+  "阅读进度、书签、高亮和摘录保存在插件数据与 Markdown 笔记中，可在设置页导出核心数据备份。": "Progression de lecture, signets, surlignages et extraits sont enregistrés dans les données du plugin et les notes Markdown. Vous pouvez exporter une sauvegarde des données principales dans les paramètres.",
+  "稍后探索": "Explorer plus tard",
+  "打开个人图书馆": "Ouvrir la bibliothèque personnelle",
+  "插件设置": "Paramètres du plugin",
+  "界面语言": "Langue de l'interface",
+  "选择 English、简体中文、繁體中文或 Français。切换后，重新打开已打开的插件页面即可看到完整界面更新；不会改动任何电子书、笔记或已有数据。": "Choisissez English, 简体中文, 繁體中文 ou Français. Après le changement, rouvrez les pages ouvertes du plugin pour voir la mise à jour complète de l'interface ; aucun livre, aucune note ni donnée existante n'est modifié.",
+  "馆主名称": "Nom du propriétaire de la bibliothèque",
+  "填写后显示为“名称 的个人图书馆”；留空则显示“个人图书馆”。名称只保存在插件设置中，不会改动电子书或索引。": "Lorsqu'il est défini, la bibliothèque s'affiche sous la forme « Bibliothèque personnelle de Nom » ; sinon « Bibliothèque personnelle ». Le nom reste dans les paramètres du plugin et ne modifie jamais les livres ni l'index.",
+  "例如：Sunny D": "Par exemple : Sunny D",
+  "保存名称": "Enregistrer le nom",
+  "个人图书馆名称已更新。": "Nom de la bibliothèque personnelle mis à jour.",
+  "无法保存名称。": "Impossible d'enregistrer le nom.",
+  "读书笔记保存目录": "Dossier des notes de lecture",
+  "仅允许 Vault 内、且不在 .obsidian 内的相对路径。目录会在你首次主动创建笔记时才建立。": "Utilisez un chemin relatif dans le coffre (Vault), mais pas dans .obsidian. Le dossier n'est créé que lorsque vous choisissez de créer une note.",
+  "保存目录": "Enregistrer le dossier",
+  "读书笔记保存目录已更新。": "Dossier des notes de lecture mis à jour.",
+  "无法保存目录：请填写 Vault 内的有效相对路径。": "Impossible d'enregistrer le dossier : saisissez un chemin relatif valide dans le coffre (Vault).",
+  "主题研究笔记保存目录": "Dossier des notes de recherche",
+  "用于从摘录检索创建或追加主题研究笔记；仅允许 Vault 内、且不在 .obsidian 内的相对路径。": "Utilisé pour créer ou compléter des notes de recherche depuis la recherche d'extraits. Utilisez un chemin relatif dans le coffre (Vault), mais pas dans .obsidian.",
+  "主题研究笔记保存目录已更新。 ": "Dossier des notes de recherche mis à jour. ",
+  "新读书笔记默认模板": "Modèle par défaut des nouvelles notes de lecture",
+  "可使用 {{title}}、{{bookId}}、{{bookPath}}、{{format}}、{{readingStatus}}、{{created}}，以及对应的 Json 占位符（如 {{titleJson}}）。模板仅在新建笔记时使用。": "Vous pouvez utiliser {{title}}, {{bookId}}, {{bookPath}}, {{format}}, {{readingStatus}}, {{created}} et leurs équivalents JSON (par exemple {{titleJson}}). Le modèle n'est utilisé que pour les nouvelles notes.",
+  "保存模板": "Enregistrer le modèle",
+  "新读书笔记默认模板已更新。": "Modèle par défaut des notes de lecture mis à jour.",
+  "无法保存模板：模板不能为空且不能过长。": "Impossible d'enregistrer le modèle : il ne peut pas être vide ni trop long.",
+  "恢复默认插件设置": "Restaurer les paramètres par défaut du plugin",
+  "只恢复馆主名称、读书笔记目录、主题研究目录、新笔记模板和新书默认阅读外观。已为单本书保存的外观不会改变；不会移动或删除已有 Markdown、阅读数据或电子书。": "Restaure uniquement le nom du propriétaire, les dossiers de notes, le modèle des nouvelles notes et l'apparence par défaut des nouveaux livres. L'apparence propre à chaque livre est conservée. Les notes Markdown, les données de lecture et les livres électroniques existants ne sont jamais déplacés ni supprimés.",
+  "恢复默认设置": "Restaurer les valeurs par défaut",
+  "电子书打开位置": "Emplacement d'ouverture des livres électroniques",
+  "默认在 Obsidian 标签页打开。选择“独立阅读窗口”可减轻关闭大型 EPUB 时主窗口的卡顿；关闭时仍可能有短暂等待，且不会改动电子书或阅读数据。": "Par défaut, les livres s'ouvrent dans un onglet Obsidian. Une fenêtre de lecture séparée peut réduire les ralentissements à la fermeture des gros EPUB. La fermeture peut encore prendre un instant ; les livres et les données de lecture ne sont jamais modifiés.",
+  "Obsidian 标签页（默认）": "Onglet Obsidian (par défaut)",
+  "独立阅读窗口（减轻关闭卡顿）": "Fenêtre de lecture séparée (réduit la pause à la fermeture)",
+  "阅读数据维护": "Maintenance des données de lecture",
+  "清除全部最近阅读历史": "Effacer tout l'historique de lecture récent",
+  "仅清除“最近阅读”的打开时间记录。不会删除进度、书签、高亮、摘录、想法、收藏、Markdown 笔记或原始电子书。": "Efface uniquement les heures d'ouverture de Lecture récente. Ne supprime jamais la progression, les signets, les surlignages, les extraits, les pensées, les favoris, les notes Markdown ni les livres électroniques d'origine.",
+  "清除全部历史": "Effacer tout l'historique",
+  "重置全部阅读进度": "Réinitialiser toute la progression de lecture",
+  "仅清除每本书的上次阅读位置。不会删除书签、高亮、摘录、想法、阅读状态、收藏、Markdown 笔记或原始电子书。": "Efface uniquement la dernière position de lecture de chaque livre. Ne supprime jamais les signets, les surlignages, les extraits, les pensées, les statuts de lecture, les favoris, les notes Markdown ni les livres électroniques d'origine.",
+  "重置全部进度": "Réinitialiser toute la progression",
+  "备份与恢复": "Sauvegarde et restauration",
+  "导出核心数据备份": "Exporter la sauvegarde des données principales",
+  "导出插件设置、图书索引、进度、书签、状态、收藏和本地摘录/高亮定位数据。不会导出电子书、Markdown 笔记、封面或缓存；由你通过系统窗口选择保存位置。": "Exporte les paramètres du plugin, l'index de la bibliothèque, la progression, les signets, les statuts, les favoris et les données de localisation locales des extraits/surlignages. N'exporte jamais les livres électroniques, les notes Markdown, les couvertures ni le cache. Vous choisissez la destination dans une fenêtre système.",
+  "导出备份": "Exporter la sauvegarde",
+  "从备份恢复核心数据": "Restaurer les données principales depuis une sauvegarde",
+  "只读取你主动选择的 Local Book Reader 备份文件。恢复前会显示备份摘要并要求确认；恢复前自动保存当前核心数据。电子书和 Markdown 笔记不会被读取或修改。": "Lit uniquement un fichier de sauvegarde Local Book Reader que vous choisissez. Un résumé s'affiche et une confirmation est demandée avant la restauration ; les données principales actuelles sont sauvegardées automatiquement au préalable. Les livres électroniques et les notes Markdown ne sont ni lus ni modifiés.",
+  "选择备份文件": "Choisir le fichier de sauvegarde",
+  "缓存维护": "Maintenance du cache",
+  "正在读取缓存占用…": "Lecture de l'utilisation du cache…",
+  "无法读取缓存占用；现有阅读数据未受影响。 ": "Impossible de lire l'utilisation du cache ; les données de lecture existantes ne sont pas affectées. ",
+  "清理可重建缓存": "Vider le cache reconstruisible",
+  "只清理插件专属 cache 目录中的可重建文件。不会删除进度、书签、高亮、摘录、想法、状态、收藏、自动备份、Markdown 笔记或电子书。": "Supprime uniquement les fichiers reconstruisibles du dossier cache propre au plugin. Ne supprime jamais la progression, les signets, les surlignages, les extraits, les pensées, les statuts, les favoris, les sauvegardes automatiques, les notes Markdown ni les livres électroniques.",
+  "清理缓存": "Vider le cache",
+  "未读": "Non lu",
+  "正在阅读": "En cours de lecture",
+  "已读": "Terminé",
+  "疑似重复文件": "Fichiers potentiellement en double",
+  "仅按同名、同格式和同文件大小列出候选，不读取正文或计算文件哈希，因此结果只供人工核对。插件不会自动合并、移动、修改或删除任何电子书。": "Les candidats correspondent uniquement au nom, au format et à la taille du fichier. Le contenu et les empreintes ne sont pas lus, examinez donc les résultats manuellement. Le plugin ne fusionne, ne déplace, ne modifie et ne supprime jamais automatiquement des livres électroniques.",
+  "当前书籍": "Livre actuel",
+  "没有发现符合当前保守规则的疑似重复文件。": "Aucun fichier potentiellement en double ne correspond aux règles prudentes actuelles.",
+  "仅索引文件名和基础属性；不会读取正文、提取封面或修改原始电子书。": "Indexe uniquement les noms de fichiers et les propriétés de base. Il ne lit pas le contenu des livres, n'extrait pas les couvertures et ne modifie pas les livres électroniques d'origine.",
+  "尚未建立图书馆索引。点击“刷新图书馆”开始。 ": "Aucun index de bibliothèque pour l'instant. Sélectionnez Actualiser la bibliothèque pour commencer. ",
+  "全部格式": "Tous les formats",
+  "全部分类": "Tous les dossiers",
+  "全部状态": "Tous les statuts",
+  "文件缺失": "Fichier manquant",
+  "仅看收藏": "Favoris uniquement",
+  "最近阅读": "Lecture récente",
+  "尚无索引。请先点击“刷新图书馆”。": "Aucun index pour l'instant. Sélectionnez d'abord Actualiser la bibliothèque.",
+  "没有符合当前筛选条件的书籍。": "Aucun livre ne correspond aux filtres actuels.",
+  "根目录": "Racine du coffre",
+  "笔记": "Notes",
+  "收藏": "Favori",
+  "取消收藏": "Retirer des favoris",
+  "管理": "Gérer",
+  "清除本书最近阅读历史": "Effacer l'historique de lecture récent de ce livre",
+  "重置本书阅读进度": "Réinitialiser la progression de lecture de ce livre",
+  "检查疑似重复文件": "Vérifier les doublons possibles",
+  "书籍信息": "Informations sur le livre",
+  "书名": "Titre",
+  "作者": "Auteur",
+  "出版社": "Éditeur",
+  "出版日期": "Publié",
+  "语言": "Langue",
+  "标识符": "Identifiant",
+  "格式": "Format",
+  "分类": "Dossier",
+  "本地缓存封面": "Couverture en cache local",
+  "添加书签": "Ajouter un signet",
+  "可选：为书签填写名称或简短说明。": "Facultatif : donnez un nom ou une courte note au signet.",
+  "记录想法": "Enregistrer une pensée",
+  "保存到读书笔记": "Enregistrer dans la note de lecture",
+  "保存摘录": "Enregistrer l'extrait",
+  "阅读外观": "Apparence de lecture",
+  "字号": "Taille du texte",
+  "行距": "Interligne",
+  "页边距": "Marges",
+  "主题": "Thème",
+  "跟随 Obsidian": "Suivre Obsidian",
+  "浅色": "Clair",
+  "深色": "Sombre",
+  "护眼": "Sépia",
+  "阅读方式": "Mode de lecture",
+  "分页": "Paginé",
+  "连续滚动": "Défilement continu",
+  "搜索正文": "Rechercher dans le texte",
+  "上一页": "Page précédente",
+  "下一页": "Page suivante",
+  "书签": "Signets",
+  "目录": "Table des matières",
+  "摘录所选文字": "Extraire le texte sélectionné",
+  "摘录": "Extraits",
+  "页码": "Page",
+  "缩小": "Réduire",
+  "放大": "Agrandir",
+  "适宽": "Ajuster à la largeur",
+  "无法打开电子书": "Impossible d'ouvrir le livre électronique",
+  "未命名章节": "Chapitre sans titre",
+  "未命名书签": "Signet sans titre",
+  "删除高亮": "Supprimer le surlignage",
+  "摘录与笔记检索": "Recherche d'extraits et de notes",
+  "书名筛选": "Filtrer par titre",
+  "标签筛选（不带 #）": "Filtrer par étiquette (sans #)",
+  "开始日期": "Date de début",
+  "结束日期": "Date de fin",
+  "主题名称": "Nom du sujet de recherche",
+  "创建/追加主题研究笔记": "Créer/compléter une note de recherche",
+  "想法与主题研究笔记": "Pensées et notes de recherche",
+  "返回原文": "Retour à la source",
+  "打开笔记": "Ouvrir la note",
+  "想法": "Pensée",
+  "主题研究笔记": "Note de recherche",
+  "确认清除": "Confirmer l'effacement",
+  "确认重置": "Confirmer la réinitialisation",
+  "确认恢复": "Confirmer la restauration",
+  "确认清理缓存": "Confirmer la vidange du cache",
+  "选择保存位置": "Choisir l'emplacement de sauvegarde",
+  "确认恢复默认设置": "Confirmer la restauration des valeurs par défaut",
+  "Local Book Reader 备份": "Sauvegarde Local Book Reader",
+  "输入书名、作者、文件夹或扩展名进行筛选": "Filtrer par titre, auteur, dossier ou extension de fichier",
+  "选择": "Sélectionner",
+  "打开阅读器": "Ouvrir le lecteur",
+  "显示 Local Book Reader 使用引导": "Afficher le guide de Local Book Reader",
+  "从个人书库打开电子书": "Ouvrir un livre électronique depuis la bibliothèque personnelle",
+  "检索摘录、想法和研究笔记": "Rechercher des extraits, pensées et notes de recherche",
+  "在文件列表显示电子书文件": "Afficher les livres électroniques dans l'explorateur de fichiers",
+  "在本地电子书阅读器中打开当前书籍": "Ouvrir le livre actuel dans Local Book Reader",
+  "候选文件": "Fichiers candidats",
+  "正在扫描…": "Analyse en cours…",
+  "输入书名、文件名或分类路径后按 Enter 搜索": "Saisissez un titre, un nom de fichier ou un chemin de dossier, puis appuyez sur Entrée",
+  "按格式筛选": "Filtrer par format",
+  "按分类筛选": "Filtrer par dossier",
+  "按阅读状态筛选": "Filtrer par statut de lecture",
+  "设置": "Définir",
+  "检查": "Vérifier",
+  "本书还没有书签。": "Ce livre n'a pas encore de signets.",
+  "本书还没有摘录。": "Ce livre n'a pas encore d'extraits.",
+  "当前书籍没有可用目录。": "Ce livre n'a pas de table des matières disponible.",
+  "当前书籍不支持目录跳转。": "Ce livre ne prend pas en charge la navigation par table des matières.",
+  "该目录项没有可用的定位信息，无法跳转。": "Cet élément de la table des matières n'a pas d'emplacement utilisable.",
+  "无法跳转到该目录项。原书没有被修改。": "Impossible d'ouvrir cet élément de la table des matières. Le livre d'origine n'a pas été modifié.",
+  "此书签的定位方式与当前阅读器不匹配。 ": "L'emplacement de ce signet ne correspond pas au lecteur actuel. ",
+  "已删除本地高亮；对应的 Markdown 摘录仍保留。": "Surlignage local supprimé ; l'extrait Markdown correspondant a été conservé.",
+  "未能安全保存摘录删除操作；请重新打开本书后确认高亮状态。": "Impossible d'enregistrer la suppression de l'extrait en toute sécurité. Rouvrez le livre pour vérifier l'état du surlignage.",
+  "请先输入想法内容。 ": "Saisissez d'abord le contenu d'une pensée. ",
+  "无法写入读书笔记；原书没有被修改。 ": "Impossible d'écrire la note de lecture. Le livre d'origine n'a pas été modifié. ",
+  "无法保存摘录；原始电子书没有被修改。": "Impossible d'enregistrer l'extrait. Le livre électronique d'origine n'a pas été modifié.",
+  "无法保存阅读外观设置；原始电子书没有被修改。": "Impossible d'enregistrer l'apparence de lecture. Le livre électronique d'origine n'a pas été modifié.",
+  "无法跳转到该搜索结果。": "Impossible d'ouvrir ce résultat de recherche.",
+  "当前阅读器尚未准备好，无法跳转到这条摘录。": "Le lecteur n'est pas prêt à ouvrir cet extrait.",
+  "无法打开此电子书；详细原因已显示在阅读器页面中。": "Impossible d'ouvrir ce livre électronique. Les détails sont affichés dans le lecteur.",
+  "当前书籍尚未准备好，暂时无法添加书签。": "Le livre actuel n'est pas prêt pour ajouter un signet.",
+  "未能保存书签；请重新打开书籍后再试。": "Impossible d'enregistrer le signet. Rouvrez le livre et réessayez.",
+  "书签已添加。": "Signet ajouté.",
+  "当前书籍尚未准备好，暂时无法记录想法。 ": "Le livre actuel n'est pas prêt pour enregistrer une pensée. ",
+  "想法已保存到读书笔记。 ": "Pensée enregistrée dans la note de lecture. ",
+  "请先在正文中选中要摘录的文字。": "Sélectionnez du texte dans le livre avant d'enregistrer un extrait.",
+  "摘录已保存到阅读笔记。": "Extrait enregistré dans la note de lecture.",
+  "阅读外观已保存，仅应用于当前书籍。": "Apparence de lecture enregistrée pour ce livre uniquement.",
+  "当前书籍尚未准备好，暂时无法搜索。": "Le livre actuel n'est pas prêt pour la recherche.",
+  "请通过命令、侧边栏按钮或文件菜单打开电子书。": "Ouvrez un livre électronique avec une commande, un bouton de la barre latérale ou le menu Fichier.",
+  "信息仅在打开本书时从本地文件按需读取并缓存；原始电子书不会被修改。": "Les informations sont lues depuis le fichier local et mises en cache uniquement à l'ouverture de ce livre. Le livre électronique d'origine n'est pas modifié.",
+  "当前格式尚无可安全读取的详细元数据，将继续使用文件名和分类信息。": "Ce format n'a pas de métadonnées détaillées lisibles en toute sécurité ; le lecteur utilisera donc le nom de fichier et le dossier.",
+  "例如：第三章的关键论点": "Par exemple : argument clé du chapitre 3",
+  "将按需创建本书的 Markdown 读书笔记，并只追加这一条想法。": "Crée la note de lecture Markdown de ce livre uniquement si nécessaire et n'ajoute que cette pensée.",
+  "写下你的想法、问题或待核对的线索……": "Écrivez votre pensée, votre question ou la piste à vérifier…",
+  "主题标签（可选，用空格或逗号分隔）": "Étiquettes (facultatif ; séparez-les par des espaces ou des virgules)",
+  "所选文字会保存到插件数据，并追加到本书的 Markdown 阅读笔记；不会修改原始电子书。": "Le texte sélectionné est enregistré dans les données du plugin et ajouté à la note de lecture Markdown de ce livre. Le livre électronique d'origine n'est pas modifié.",
+  "可选：为这段摘录写下随想": "Facultatif : ajoutez une note à propos de cet extrait",
+  "此处调整只保存到当前书籍，不会影响其他书籍。": "Ces réglages ne sont enregistrés que pour ce livre et n'affectent pas les autres livres.",
+  "输入关键词后按 Enter": "Saisissez un mot-clé, puis appuyez sur Entrée",
+  "正在搜索…": "Recherche en cours…",
+  "没有找到匹配文字。": "Aucun texte correspondant trouvé.",
+  "搜索失败；原始电子书没有被修改。": "Échec de la recherche. Le livre électronique d'origine n'a pas été modifié.",
+  "当前书籍尚无可安全读取的详细元数据": "Aucune métadonnée détaillée ne peut encore être lue en toute sécurité pour ce livre",
+  "搜索结果": "Résultat de recherche",
+  "字符位置": "Position du caractère",
+  "输入页码后按 Enter 跳转": "Saisissez un numéro de page, puis appuyez sur Entrée pour y aller",
+  "搜索已保存摘录、阅读笔记中的想法和主题研究笔记；不读取或建立电子书正文索引。": "Recherche les extraits enregistrés, les pensées des notes de lecture et les notes de recherche. Il ne lit ni ne crée d'index plein texte des livres électroniques.",
+  "摘录、想法或研究笔记关键词（按 Enter 搜索）": "Mots-clés d'extrait, de pensée ou de note de recherche (appuyez sur Entrée pour rechercher)",
+  "按关键词、书名、标签和日期检索摘录、想法与主题研究笔记": "Rechercher des extraits, pensées et notes de recherche par mot-clé, titre, étiquette et date",
+  "例如：现代都市成长叙事": "Par exemple : récits urbains contemporains de passage à l'âge adulte",
+  "将勾选的摘录写入指定主题的 Markdown 笔记；不会修改原始电子书": "Écrit les extraits sélectionnés dans une note Markdown pour le sujet choisi. Le livre électronique d'origine n'est pas modifié.",
+  "请先填写主题研究笔记名称。 ": "Saisissez d'abord le nom du sujet de la note de recherche. ",
+  "已创建或追加主题研究笔记；原始电子书没有被修改。 ": "Note de recherche créée ou complétée. Le livre électronique d'origine n'a pas été modifié. ",
+  "无法写入主题研究笔记；原始电子书和已有笔记均未被修改。 ": "Impossible d'écrire la note de recherche. Les livres électroniques d'origine et les notes existantes n'ont pas été modifiés. ",
+  "没有符合当前筛选条件的摘录。": "Aucun extrait ne correspond aux filtres actuels.",
+  "尚未保存摘录。": "Aucun extrait enregistré pour l'instant.",
+  "为保持界面流畅，当前只显示前 500 条结果；请继续缩小筛选范围。": "Pour garder une interface réactive, seuls les 500 premiers résultats sont affichés. Affinez les filtres pour en voir plus.",
+  "正在检索阅读笔记和主题研究笔记…": "Recherche des notes de lecture et des notes de recherche…",
+  "没有符合当前筛选条件的想法或主题研究笔记。": "Aucune pensée ni note de recherche ne correspond aux filtres actuels.",
+  "选择《": "Sélectionner les extraits de ",
+  "随想": "Note",
+  "在阅读器中打开这条摘录对应的原书位置": "Ouvrir l'emplacement de cet extrait dans le lecteur",
+  "无法返回原文；原书路径或定位数据可能已变化。原始电子书没有被修改。": "Impossible de retourner à la source. Le chemin ou les données d'emplacement du livre ont peut-être changé ; le livre électronique d'origine n'a pas été modifié.",
+  "打开这条内容所在的 Markdown 笔记": "Ouvrir la note Markdown qui contient cet élément",
+  "该 Markdown 笔记当前找不到。 ": "Cette note Markdown est introuvable pour l'instant. ",
+  "图书馆扫描未完成；已有索引和阅读数据已保留。请查看控制台后重试。": "L'analyse de la bibliothèque ne s'est pas terminée. L'index et les données de lecture existants ont été conservés. Vérifiez la console, puis réessayez.",
+  "此书文件当前找不到，已保留其阅读数据和笔记关联。": "Ce fichier de livre est introuvable pour l'instant. Ses données de lecture et ses liens de notes ont été conservés.",
+  "无法打开此书的读书笔记；原始电子书没有被修改。": "Impossible d'ouvrir la note de lecture de ce livre. Le livre électronique d'origine n'a pas été modifié.",
+  "已完成": "Terminé",
+  "未记录进度": "Aucune progression enregistrée",
+  "已暂停": "En pause",
+  "清除本书的最近阅读历史或重置本书的阅读进度": "Effacer l'historique de lecture récent de ce livre ou réinitialiser sa progression de lecture",
+  "当前 Obsidian 环境不支持系统保存位置选择。 ": "L'environnement Obsidian actuel ne prend pas en charge le choix d'un emplacement de sauvegarde système. ",
+  "当前 Obsidian 环境不支持系统文件选择。 ": "L'environnement Obsidian actuel ne prend pas en charge le choix d'un fichier système. ",
+  "备份文件格式不正确或版本不受支持。 ": "Le format du fichier de sauvegarde est invalide ou sa version n'est pas prise en charge. ",
+  "当前书籍尚未建立阅读记录，无法保存阅读外观。": "Ce livre n'a pas encore de fiche de lecture ; son apparence de lecture ne peut donc pas être enregistrée.",
+  "数据结构与当前版本不兼容": "La structure des données est incompatible avec la version actuelle",
+  "笔记模板不能为空，且不能超过 100,000 个字符。": "Le modèle de note ne peut pas être vide ni dépasser 100 000 caractères.",
+  "笔记目录不能位于 .obsidian 内。": "Le dossier des notes ne peut pas se trouver dans .obsidian.",
+  "笔记目录必须是 Vault 内的相对路径。": "Le dossier des notes doit être un chemin relatif dans le coffre (Vault).",
+  "馆主名称不能超过 80 个字符。": "Le nom du propriétaire de la bibliothèque ne peut pas dépasser 80 caractères.",
+  "Local Book Reader 未能完成初始化，已停止本次加载；Obsidian 和原书不受影响。请查看控制台后重试。": "Local Book Reader n'a pas pu terminer son démarrage et a arrêté le chargement. Obsidian et les livres d'origine ne sont pas affectés. Vérifiez la console, puis réessayez.",
+  "主题研究笔记服务尚未初始化。 ": "Le service de notes de recherche n'est pas initialisé. ",
+  "读书笔记服务尚未初始化": "Le service de notes de lecture n'est pas initialisé",
+  "阅读数据尚未初始化": "Les données de lecture ne sont pas initialisées",
+  "插件设置尚未初始化。": "Les paramètres du plugin ne sont pas initialisés.",
+  "原书当前不在记录的位置；请先在个人图书馆重新关联该书。": "Le livre d'origine n'est plus à l'emplacement enregistré. Réassociez-le d'abord dans la bibliothèque personnelle.",
+  "后续打开的电子书将使用独立阅读窗口。": "Les livres électroniques ouverts à partir de maintenant utiliseront une fenêtre de lecture séparée.",
+  "后续打开的电子书将使用 Obsidian 标签页。": "Les livres électroniques ouverts à partir de maintenant utiliseront un onglet Obsidian.",
+  "备份内容超过 50 MB 安全上限，未写入任何文件。 ": "Le contenu de la sauvegarde dépasse la limite de sécurité de 50 Mo ; aucun fichier n'a été écrit. ",
+  "备份文件超过 50 MB 安全上限，未读取或恢复任何数据。 ": "Le fichier de sauvegarde dépasse la limite de sécurité de 50 Mo ; aucune donnée n'a été lue ni restaurée. ",
+  "导出后的备份校验失败。 ": "La vérification de la sauvegarde exportée a échoué. ",
+  "已显示电子书文件。若文件树变慢，可在 Obsidian 设置中关闭“显示不支持文件类型”。": "Les fichiers de livres électroniques sont maintenant affichés. Si l'arborescence des fichiers devient lente, désactivez Afficher les types de fichiers non pris en charge dans les paramètres d'Obsidian.",
+  "已检测到书籍移动或重命名，但未能更新关联；原始电子书和已有笔记均未被修改。请稍后在个人图书馆刷新。 ": "Un livre déplacé ou renommé a été détecté, mais son lien n'a pas pu être mis à jour. Les livres électroniques d'origine et les notes existantes n'ont pas été modifiés. Actualisez la bibliothèque personnelle plus tard. ",
+  "当前格式无法跳转到这条摘录的位置。": "Ce format ne peut pas ouvrir l'emplacement de cet extrait.",
+  "当前没有可清理的缓存文件。 ": "Il n'y a aucun fichier de cache à supprimer. ",
+  "所选摘录已经不存在。 ": "Les extraits sélectionnés n'existent plus. ",
+  "所选文件不是可恢复的 Local Book Reader 核心数据备份。 ": "Le fichier sélectionné n'est pas une sauvegarde restaurable des données principales de Local Book Reader. ",
+  "找不到这条摘录的本地定位数据；原始笔记内容仍可正常阅读。": "Les données d'emplacement locales de cet extrait sont introuvables ; le contenu de la note d'origine reste lisible.",
+  "插件设置已恢复默认值；已有笔记和电子书未被移动或修改。 ": "Paramètres du plugin restaurés aux valeurs par défaut. Les notes et livres électroniques existants n'ont pas été déplacés ni modifiés. ",
+  "无法保存此书的阅读数据；本次仍可只读打开，修复数据文件后再试。\n原始电子书不会被修改。": "Impossible d'enregistrer les données de lecture de ce livre. Il peut encore s'ouvrir en lecture seule ; réparez le fichier de données et réessayez.\nLe livre électronique d'origine n'a pas été modifié.",
+  "无法创建或打开读书笔记；原始电子书没有被修改。": "Impossible de créer ou d'ouvrir la note de lecture. Le livre électronique d'origine n'a pas été modifié.",
+  "无法打开独立阅读窗口，已改为在 Obsidian 标签页打开。": "Impossible d'ouvrir une fenêtre de lecture séparée ; le livre s'est ouvert dans un onglet Obsidian.",
+  "无法更新文件列表显示设置；阅读器仍可通过“从个人书库打开电子书”使用。": "Impossible de mettre à jour le réglage de l'explorateur de fichiers. Vous pouvez toujours utiliser le lecteur via Ouvrir un livre électronique depuis la bibliothèque personnelle.",
+  "无法返回原文；原始电子书没有被修改。": "Impossible de retourner à la source. Le livre électronique d'origine n'a pas été modifié.",
+  "核心数据已恢复。请关闭并重新打开已打开的图书馆或阅读器标签页，以显示恢复后的状态。 ": "Données principales restaurées. Fermez puis rouvrez les onglets de bibliothèque ou de lecteur ouverts pour afficher l'état restauré. ",
+  "格式不正确": "Format incorrect",
+  "没有可清除的最近阅读历史。 ": "Il n'y a aucun historique de lecture récent à effacer. ",
+  "没有可重置的阅读进度。 ": "Il n'y a aucune progression de lecture à réinitialiser. ",
+  "确认恢复核心数据": "Confirmer la restauration des données principales",
+  "确认恢复默认插件设置": "Confirmer la restauration des paramètres par défaut du plugin",
+  "确认清理可重建缓存": "Confirmer la vidange du cache reconstruisible",
+  "简体中文": "Chinois simplifié",
+  "繁體中文": "Chinois traditionnel",
+  "English": "Anglais",
+  "Français": "Français",
+  "请先选择支持的电子书文件。": "Sélectionnez d'abord un fichier de livre électronique pris en charge.",
+  "返回原文链接缺少摘录标识。": "Le lien Retour à la source n'a pas d'identifiant d'extrait.",
+  "这本书": "ce livre",
+  "主题名称不能为空且不能超过 120 个字符。": "Le nom du sujet de recherche ne peut pas être vide ni dépasser 120 caractères.",
+  "请至少选择一条摘录。": "Sélectionnez au moins un extrait.",
+  "此书尚未建立阅读身份，无法创建读书笔记。": "Ce livre n'a pas encore d'identité de lecture ; une note de lecture ne peut donc pas être créée.",
+  "无法创建 PDF 页面绘制区域。": "Impossible de créer la zone de rendu de la page PDF.",
+  "无法创建重排版阅读器。": "Impossible de créer le lecteur de livres remis en page.",
+  "本插件不会尝试绕过保护；请使用合法来源提供的未加密副本。": "Ce plugin ne contournera pas la protection. Utilisez une copie non chiffrée provenant d'une source légale.",
+  "删除会移除本阅读器中的高亮和定位数据；已经写入的 Markdown 读书笔记会保留。": "La suppression retire le surlignage et les données d'emplacement de ce lecteur. Les notes de lecture Markdown déjà écrites sont conservées.",
+  "无法读取想法或主题研究笔记；已有摘录检索不受影响。 ": "Impossible de lire les pensées ou notes de recherche ; la recherche d'extraits existante n'est pas affectée. ",
+  "主题研究笔记名称": "Nom de la note de recherche",
+  "这项操作只会清除最近打开时间。进度、书签、高亮、摘录、想法、收藏、Markdown 笔记和原始电子书都会保留。": "Cette opération n'efface que la dernière heure d'ouverture. Progression, signets, surlignages, extraits, pensées, favoris, notes Markdown et livres électroniques d'origine sont tous conservés.",
+  "这项操作只会清除上次阅读位置。书签、高亮、摘录、想法、阅读状态、收藏、Markdown 笔记和原始电子书都会保留。": "Cette opération n'efface que la dernière position de lecture. Signets, surlignages, extraits, pensées, statuts de lecture, favoris, notes Markdown et livres électroniques d'origine sont tous conservés.",
+  "将导出插件设置、图书索引、进度、书签、状态、收藏和本地摘录/高亮定位数据。不会导出或修改电子书、Markdown 笔记、封面和缓存。下一步将由你选择新的保存位置。": "Exportera les paramètres du plugin, l'index de la bibliothèque, la progression, les signets, les statuts, les favoris et les données de localisation locales des extraits/surlignages. Les livres électroniques, notes Markdown, couvertures et cache ne seront ni exportés ni modifiés. Vous choisirez ensuite un nouvel emplacement de sauvegarde.",
+  "只会删除插件专属 cache 目录中的可重建文件。进度、书签、高亮、摘录、想法、状态、收藏、自动备份、Markdown 笔记和原始电子书都会保留。": "Supprimera uniquement les fichiers reconstruisibles du dossier cache propre au plugin. Progression, signets, surlignages, extraits, pensées, statuts, favoris, sauvegardes automatiques, notes Markdown et livres électroniques d'origine sont tous conservés.",
+  "将恢复默认的馆主名称、读书笔记目录、主题研究目录、新笔记模板和新书默认阅读外观。已为单本书保存的外观不会改变；已有 Markdown 文件、进度、书签、高亮、摘录、想法、收藏、自动备份、缓存和电子书均不会被移动、删除或修改。": "Restaurera le nom du propriétaire par défaut, les dossiers de notes, le modèle des nouvelles notes et l'apparence par défaut des nouveaux livres. L'apparence propre à chaque livre est conservée. Les fichiers Markdown, la progression, les signets, les surlignages, les extraits, les pensées, les favoris, les sauvegardes automatiques, le cache et les livres électroniques existants ne seront jamais déplacés, supprimés ni modifiés.",
 };
 
 const chinese = Object.fromEntries(Object.entries(english).map(([source, translated]) => [translated, source]));
@@ -336,8 +648,17 @@ export function getLanguage(): UiLanguage {
 }
 
 export function t(source: string): string {
+  if (activeLanguage === "fr") return french[source] ?? translateDynamicToFrench(source);
   if (activeLanguage === "en") return english[source] ?? translateDynamicToEnglish(source);
-  if (activeLanguage === "zh-TW") return toTraditional(chinese[source] ?? source);
+  if (activeLanguage === "zh-TW") {
+    // Convert only plugin-owned UI strings (static map keys and known dynamic
+    // templates). Everything else, including book names, paths, and user
+    // content, must pass through unchanged.
+    if (english[source] !== undefined) return toTraditional(source);
+    if (chinese[source] !== undefined) return toTraditional(chinese[source]);
+    if (translateDynamicToEnglish(source) !== source) return toTraditional(source);
+    return source;
+  }
   return chinese[source] ?? source;
 }
 
@@ -368,12 +689,44 @@ function translateDynamicToEnglish(source: string): string {
   if (match) return `${match[1]} matches found`;
   match = source.match(/^正在扫描：([\d,]+) \/ ([\d,]+)，新发现 ([\d,]+) 本。$/u);
   if (match) return `Scanning: ${match[1]} / ${match[2]}, ${match[3]} new books found.`;
+  match = source.match(/^已暂停：([\d,]+) \/ ([\d,]+)，新发现 ([\d,]+) 本。$/u);
+  if (match) return `Paused: ${match[1]} / ${match[2]}, ${match[3]} new books found.`;
   match = source.match(/^图书馆刷新完成：检查 ([\d,]+) 本，新发现 ([\d,]+) 本，耗时 (.+)。$/u);
   if (match) return `Library refresh complete: checked ${match[1]} books, found ${match[2]} new books, in ${translateDurationToEnglish(match[3])}.`;
   match = source.match(/^已安全重新关联 ([\d,]+) 本移动或重新出现的书籍；原有进度、书签、摘录和收藏已保留。$/u);
   if (match) return `Safely relinked ${match[1]} moved or reappeared books. Existing progress, bookmarks, excerpts, and favorites were kept.`;
   match = source.match(/^([\d,]+) 本新发现书籍存在多个相同属性的缺失候选，未自动合并；原有数据均已保留。$/u);
   if (match) return `${match[1]} newly discovered books have multiple missing-file candidates with matching properties. They were not merged automatically; existing data was kept.`;
+  match = source.match(/^候选文件（(\d+)）$/u);
+  if (match) return `Candidate files (${match[1]})`;
+  match = source.match(/^已清除 (\d+) 本书的最近阅读历史。$/u);
+  if (match) return `Cleared recent-reading history for ${match[1]} books.`;
+  match = source.match(/^已重置 (\d+) 本书的阅读进度。$/u);
+  if (match) return `Reset reading progress for ${match[1]} books.`;
+  match = source.match(/^已清理 (\d+) 个缓存文件，释放 (.+)。$/u);
+  if (match) return `Cleared ${match[1]} cache files, freeing ${match[2]}.`;
+  match = source.match(/^核心数据备份已导出：(.+)$/u);
+  if (match) return `Core-data backup exported: ${match[1]}`;
+  match = source.match(/^操作未完成(?:：(.+))? 现有阅读数据已保留。$/u);
+  if (match) return match[1] ? `Action not completed: ${match[1].replace(/[。.]\s*$/u, "")}. Existing reading data was kept.` : "Action not completed. Existing reading data was kept.";
+  match = source.match(/^无法保存名称：(.+)$/u);
+  if (match) return `Could not save the name: ${match[1]}`;
+  match = source.match(/^设置 ?(.+?) ?的阅读状态$/u);
+  if (match) return `Set reading status for ${match[1]}`;
+  match = source.match(/^字符位置 (\d+)$/u);
+  if (match) return `Character position ${match[1]}`;
+  match = source.match(/^(.+? · )进度 (\d+)%$/u);
+  if (match) return `${match[1]}Progress ${match[2]}%`;
+  match = source.match(/^\/ (\d+) · 适宽$/u);
+  if (match) return `/ ${match[1]} · Fit width`;
+  match = source.match(/^此 ([A-Z0-9]+) 文件带有加密或 DRM 保护（标记 (.+)）。本插件不会尝试绕过保护；请使用合法来源提供的未加密副本。$/u);
+  if (match) return `This ${match[1]} file has encryption or DRM protection (marker: ${match[2]}). This plugin will not bypass protection. Use an unencrypted copy provided through a lawful source.`;
+  match = source.match(/^确认清除(全部|《(.+?)》的)最近阅读历史$/u);
+  if (match) return match[1] === "全部" ? "Confirm clear all recent-reading history" : `Confirm clear recent-reading history for “${match[2]}”`;
+  match = source.match(/^确认重置(全部|《(.+?)》的)阅读进度$/u);
+  if (match) return match[1] === "全部" ? "Confirm reset all reading progress" : `Confirm reset reading progress for “${match[2]}”`;
+  match = source.match(/^备份：(.+)\n创建时间：(.+)\n插件版本：(.+)\n包含 (\d+) 本书、(\d+) 条阅读记录、(\d+) 个书签、(\d+) 条本地摘录。\n\n恢复会替换当前插件的核心数据；恢复前会自动备份当前核心数据。不会读取或修改电子书、Markdown 笔记、封面或缓存。$/u);
+  if (match) return `Backup: ${match[1]}\nCreated: ${match[2]}\nPlugin version: ${match[3]}\nContains ${match[4]} books, ${match[5]} reading records, ${match[6]} bookmarks, and ${match[7]} local excerpts.\n\nRestoring replaces the plugin's core data; current core data is backed up automatically first. Ebooks, Markdown notes, covers, and cache are not read or changed.`;
   return source;
 }
 
@@ -383,6 +736,100 @@ function translateDurationToEnglish(source: string): string {
   const seconds = source.match(/^([\d.]+) 秒$/u);
   if (seconds) return `${seconds[1]} s`;
   return source;
+}
+
+function frenchPlural(count: string, singular: string, plural: string): string {
+  return count === "1" ? singular : plural;
+}
+
+function translateDynamicToFrench(source: string): string {
+  let match = source.match(/^已索引 (\d+) 本书。$/u);
+  if (match) return `${match[1]} ${frenchPlural(match[1], "livre indexé", "livres indexés")}.`;
+  match = source.match(/^显示 (\d+) \/ (\d+) 本已索引书籍$/u);
+  if (match) return `Affichage de ${match[1]} sur ${match[2]} livres indexés`;
+  match = source.match(/^显示 (\d+) \/ (\d+) 条已保存摘录$/u);
+  if (match) return `Affichage de ${match[1]} sur ${match[2]} extraits enregistrés`;
+  match = source.match(/^显示 (\d+) \/ (\d+) 条 Markdown 内容$/u);
+  if (match) return `Affichage de ${match[1]} sur ${match[2]} entrées Markdown`;
+  match = source.match(/^已选择 (\d+) 条摘录$/u);
+  if (match) return `${match[1]} ${frenchPlural(match[1], "extrait sélectionné", "extraits sélectionnés")}`;
+  match = source.match(/^核心阅读数据：(.+)；可清理缓存：(.+) \/ (.+)（(\d+) 个文件）$/u);
+  if (match) return `Données de lecture principales : ${match[1]} ; cache reconstruisible : ${match[2]} / ${match[3]} (${match[4]} ${frenchPlural(match[4], "fichier", "fichiers")})`;
+  match = source.match(/^第 (\d+) \/ (\d+) 页 · (\d+)%$/u);
+  if (match) return `Page ${match[1]} sur ${match[2]} · ${match[3]}%`;
+  match = source.match(/^第 (\d+) 页$/u);
+  if (match) return `Page ${match[1]}`;
+  match = source.match(/^进度 (\d+)%$/u);
+  if (match) return `Progression ${match[1]}%`;
+  match = source.match(/^阅读进度 (\d+)%$/u);
+  if (match) return `Progression de lecture ${match[1]}%`;
+  match = source.match(/^已找到 (\d+) 处$/u);
+  if (match) return `${match[1]} ${frenchPlural(match[1], "correspondance trouvée", "correspondances trouvées")}`;
+  match = source.match(/^找到 (\d+) 处$/u);
+  if (match) return `${match[1]} ${frenchPlural(match[1], "correspondance trouvée", "correspondances trouvées")}`;
+  match = source.match(/^正在扫描：([\d,]+) \/ ([\d,]+)，新发现 ([\d,]+) 本。$/u);
+  if (match) return `Analyse en cours : ${match[1]} / ${match[2]}, ${match[3]} ${frenchPlural(match[3], "nouveau livre trouvé", "nouveaux livres trouvés")}.`;
+  match = source.match(/^已暂停：([\d,]+) \/ ([\d,]+)，新发现 ([\d,]+) 本。$/u);
+  if (match) return `En pause : ${match[1]} / ${match[2]}, ${match[3]} ${frenchPlural(match[3], "nouveau livre trouvé", "nouveaux livres trouvés")}.`;
+  match = source.match(/^图书馆刷新完成：检查 ([\d,]+) 本，新发现 ([\d,]+) 本，耗时 (.+)。$/u);
+  if (match) return `Actualisation de la bibliothèque terminée : ${match[1]} livres vérifiés, ${match[2]} ${frenchPlural(match[2], "nouveau livre trouvé", "nouveaux livres trouvés")}, en ${translateDurationToFrench(match[3])}.`;
+  match = source.match(/^已安全重新关联 ([\d,]+) 本移动或重新出现的书籍；原有进度、书签、摘录和收藏已保留。$/u);
+  if (match) return `${match[1]} livres déplacés ou réapparus ont été réassociés. Progression, signets, extraits et favoris existants conservés.`;
+  match = source.match(/^([\d,]+) 本新发现书籍存在多个相同属性的缺失候选，未自动合并；原有数据均已保留。$/u);
+  if (match) return `${match[1]} nouveaux livres présentent plusieurs candidats manquants aux mêmes propriétés. Aucune fusion automatique ; les données existantes ont été conservées.`;
+  match = source.match(/^候选文件（(\d+)）$/u);
+  if (match) return `Fichiers candidats (${match[1]})`;
+  match = source.match(/^已清除 (\d+) 本书的最近阅读历史。$/u);
+  if (match) return `Historique de lecture récent effacé pour ${match[1]} ${frenchPlural(match[1], "livre", "livres")}.`;
+  match = source.match(/^已重置 (\d+) 本书的阅读进度。$/u);
+  if (match) return `Progression de lecture réinitialisée pour ${match[1]} ${frenchPlural(match[1], "livre", "livres")}.`;
+  match = source.match(/^已清理 (\d+) 个缓存文件，释放 (.+)。$/u);
+  if (match) return `${match[1]} ${frenchPlural(match[1], "fichier de cache supprimé", "fichiers de cache supprimés")}, ${match[2]} ${frenchPlural(match[1], "libéré", "libérés")}.`;
+  match = source.match(/^核心数据备份已导出：(.+)$/u);
+  if (match) return `Sauvegarde des données principales exportée : ${match[1]}`;
+  match = source.match(/^操作未完成(?:：(.+))? 现有阅读数据已保留。$/u);
+  if (match) return match[1] ? `Action non terminée : ${match[1].replace(/[。.]\s*$/u, "")}. Les données de lecture existantes ont été conservées.` : "Action non terminée. Les données de lecture existantes ont été conservées.";
+  match = source.match(/^无法保存名称：(.+)$/u);
+  if (match) return `Impossible d'enregistrer le nom : ${match[1]}`;
+  match = source.match(/^设置 ?(.+?) ?的阅读状态$/u);
+  if (match) return `Définir le statut de lecture de ${match[1]}`;
+  match = source.match(/^字符位置 (\d+)$/u);
+  if (match) return `Position du caractère ${match[1]}`;
+  match = source.match(/^(.+? · )进度 (\d+)%$/u);
+  if (match) return `${match[1]}Progression de lecture ${match[2]}%`;
+  match = source.match(/^\/ (\d+) · 适宽$/u);
+  if (match) return `/ ${match[1]} · Ajuster à la largeur`;
+  match = source.match(/^此 ([A-Z0-9]+) 文件带有加密或 DRM 保护（标记 (.+)）。本插件不会尝试绕过保护；请使用合法来源提供的未加密副本。$/u);
+  if (match) return `Ce fichier ${match[1]} est protégé par un chiffrement ou un DRM (marqueur : ${match[2]}). Ce plugin ne contournera pas la protection. Utilisez une copie non chiffrée provenant d'une source légale.`;
+  match = source.match(/^确认清除(全部|《(.+?)》的)最近阅读历史$/u);
+  if (match) return match[1] === "全部" ? "Confirmer la suppression de tout l'historique de lecture récent" : `Confirmer la suppression de l'historique de lecture récent de « ${match[2]} »`;
+  match = source.match(/^确认重置(全部|《(.+?)》的)阅读进度$/u);
+  if (match) return match[1] === "全部" ? "Confirmer la réinitialisation de toute la progression de lecture" : `Confirmer la réinitialisation de la progression de lecture de « ${match[2]} »`;
+  match = source.match(/^备份：(.+)\n创建时间：(.+)\n插件版本：(.+)\n包含 (\d+) 本书、(\d+) 条阅读记录、(\d+) 个书签、(\d+) 条本地摘录。\n\n恢复会替换当前插件的核心数据；恢复前会自动备份当前核心数据。不会读取或修改电子书、Markdown 笔记、封面或缓存。$/u);
+  if (match) return `Sauvegarde : ${match[1]}\nCrée : ${match[2]}\nVersion du plugin : ${match[3]}\nContient ${match[4]} livres, ${match[5]} enregistrements de lecture, ${match[6]} signets et ${match[7]} extraits locaux.\n\nLa restauration remplace les données principales du plugin ; les données principales actuelles sont sauvegardées automatiquement au préalable. Les livres électroniques, notes Markdown, couvertures et cache ne sont ni lus ni modifiés.`;
+  return source;
+}
+
+function translateDurationToFrench(source: string): string {
+  const milliseconds = source.match(/^(\d+) ms$/u);
+  if (milliseconds) return `${milliseconds[1]} ms`;
+  const seconds = source.match(/^([\d.]+) 秒$/u);
+  if (seconds) return `${seconds[1]} s`;
+  return source;
+}
+
+export function translationCoverage(): { language: UiLanguage; missing: number }[] {
+  const results: { language: UiLanguage; missing: number }[] = [];
+  for (const language of ["en", "fr", "zh-TW"] as const) {
+    let missing = 0;
+    for (const source of Object.keys(english)) {
+      if (language === "en" && !english[source]) missing++;
+      if (language === "fr" && !french[source]) missing++;
+      if (language === "zh-TW" && chinese[english[source]] !== source) missing++;
+    }
+    results.push({ language, missing });
+  }
+  return results;
 }
 
 export class LocalizedNotice extends ObsidianNotice {

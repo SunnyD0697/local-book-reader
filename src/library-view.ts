@@ -150,11 +150,11 @@ export class BookLibraryView extends ItemView {
     const status = container.createSpan({ cls: "ebook-library__scan-status" });
     this.scanStatusEl = status;
     if (scan.status === "idle" && indexedCount === 0) {
-      status.setText("尚未建立图书馆索引。点击“刷新图书馆”开始。 ");
+      status.setText(t("尚未建立图书馆索引。点击“刷新图书馆”开始。 "));
     } else if (scan.status === "idle") {
-      status.setText(`已索引 ${indexedCount} 本书。`);
+      status.setText(t(`已索引 ${indexedCount} 本书。`));
     } else {
-      status.setText(`${scan.status === "paused" ? "已暂停" : "正在扫描"}：${scan.checked} / ${scan.total}，新发现 ${scan.discovered} 本。`);
+      status.setText(t(`${scan.status === "paused" ? "已暂停" : "正在扫描"}：${scan.checked} / ${scan.total}，新发现 ${scan.discovered} 本。`));
     }
   }
 
@@ -189,7 +189,7 @@ export class BookLibraryView extends ItemView {
     const category = filters.createEl("select", { attr: { "aria-label": "按分类筛选" } });
     this.addOption(category, "all", "全部分类");
     [...new Set(allBooks.map((item) => this.categoryOf(item.book.path)).filter(Boolean))]
-      .sort((left, right) => left.localeCompare(right, getLanguage() === "en" ? "en" : "zh-Hans-CN"))
+      .sort((left, right) => left.localeCompare(right, getLanguage() === "fr" ? "fr" : getLanguage() === "en" ? "en" : "zh-Hans-CN"))
       .forEach((name) => this.addOption(category, name, name));
     category.value = this.category;
     category.onchange = () => {
@@ -264,10 +264,10 @@ export class BookLibraryView extends ItemView {
   private renderBookList(container: HTMLElement, allBooks: LibraryBook[]): void {
     // Normalize the query once. With no query, do not touch every book's
     // Chinese title/path just to prove that an empty string matches it.
-    const normalizedQuery = this.query.trim().toLocaleLowerCase(getLanguage() === "en" ? "en" : "zh-Hans-CN");
+    const normalizedQuery = this.query.trim().toLocaleLowerCase(getLanguage() === "fr" ? "fr" : getLanguage() === "en" ? "en" : "zh-Hans-CN");
     const books = allBooks.filter((item) => this.matches(item, normalizedQuery));
     const summary = container.createDiv({ cls: "ebook-library__summary" });
-    summary.setText(`显示 ${books.length} / ${allBooks.length} 本已索引书籍`);
+    summary.setText(t(`显示 ${books.length} / ${allBooks.length} 本已索引书籍`));
 
     const list = container.createDiv({ cls: "ebook-library__list" });
     if (books.length === 0) {
@@ -375,7 +375,7 @@ export class BookLibraryView extends ItemView {
         if (needsFullRender) {
           this.render();
         } else {
-          this.scanStatusEl?.setText(`正在扫描：${progress.checked} / ${progress.total}，新发现 ${progress.discovered} 本。`);
+          this.scanStatusEl?.setText(t(`正在扫描：${progress.checked} / ${progress.total}，新发现 ${progress.discovered} 本。`));
         }
       });
       new Notice(`图书馆刷新完成：检查 ${completed.total} 本，新发现 ${completed.discovered} 本，耗时 ${this.formatDuration(completed.elapsedMs)}。`);
@@ -399,7 +399,7 @@ export class BookLibraryView extends ItemView {
     if (normalizedQuery) {
       let searchable = this.searchableTextByBookId.get(item.book.bookId);
       if (searchable === undefined) {
-      searchable = `${item.book.name}\n${item.book.path}`.toLocaleLowerCase(getLanguage() === "en" ? "en" : "zh-Hans-CN");
+      searchable = `${item.book.name}\n${item.book.path}`.toLocaleLowerCase(getLanguage() === "fr" ? "fr" : getLanguage() === "en" ? "en" : "zh-Hans-CN");
         this.searchableTextByBookId.set(item.book.bookId, searchable);
       }
       if (!searchable.includes(normalizedQuery)) return false;
